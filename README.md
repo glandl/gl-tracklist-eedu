@@ -1,2 +1,2 @@
-# gl-tracklist-eedu
-Tracklist for eEducation events
+# Tracklist for eEducation Events
+Simple Tracklist read from table hosted on gdrive
