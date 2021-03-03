@@ -15,51 +15,61 @@ export class AppComponent implements OnInit{
   title: string = 'eEducation Event Tracklist';
   public displayedColumns: string[] = ['Zeit'];
 
-  public tracks: Observable<TrackEntry[]>;
+  public tracks$: Observable<TrackEntry[]>;
+  public rooms$: Observable<Room[]>;
+  public timeslots$: Observable<TimeSlot[]>;
   public tracksPivot: Record<string,any> = {};
   public arrPivot: any[] = [];
 
-  public rooms: Observable<Room[]>;
+
   public roomNames: string[] = [];
-  public timeslots: Observable<any[]>;
+  public rooms: Record<string, Room> = {};
+
+
 
   constructor(private googleSheetsDbService: GoogleSheetsDbService) {
-    this.rooms = this.googleSheetsDbService.get<any>(environment.Rooms.spreadsheetID, environment.Rooms.worksheetID, roomAttributesMapping);
-    this.tracks = this.googleSheetsDbService.get<TrackEntry>(environment.Tracks.spreadsheetID, environment.Tracks.worksheetID, trackentryAttributesMapping);
-    this.timeslots = this.googleSheetsDbService.get<TimeSlot>(environment.Tracks.spreadsheetID, environment.TimeSlots.worksheetID, timeslotAttributesMapping);
+    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Rooms.spreadsheetID, environment.Rooms.worksheetID, roomAttributesMapping);
+    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Tracks.spreadsheetID, environment.Tracks.worksheetID, trackentryAttributesMapping);
+    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Tracks.spreadsheetID, environment.TimeSlots.worksheetID, timeslotAttributesMapping);
   }
 
   ngOnInit(): void {
     this.getRooms();
-    this.generateTrackPivot();
   }
 
   getRooms(): void {
-    this.rooms.subscribe(r => {
+    this.roomNames = [];
+    this.rooms$.subscribe(r => {
       r.forEach(element => {
         this.roomNames.push(element['Raum']);
+        this.rooms[element['Raum']] = element
       });
-    });
+    },
+    err => {},
+    () => { this.getTimeSlots(); });
   }
 
-  generateTrackPivot(): void {
+  getTimeSlots(): void{
     this.tracksPivot = {};
-    this.timeslots.subscribe( timeslot => {
+    this.timeslots$.subscribe( timeslot => {
       timeslot.forEach(ts => {
         this.tracksPivot[ts['Slot']] = {};
         this.roomNames.forEach(rn => {
-          this.tracksPivot[ts['Slot']][rn] = '';
+          this.tracksPivot[ts['Slot']][rn] = 'NN';
         });
       });
-    });
-    this.tracks.subscribe(tr => {
+    },
+    err => {},
+    () => { this.generateTrackPivot(); });
+  }
+
+  generateTrackPivot(): void {
+    this.tracks$.subscribe(tr => {
       tr.forEach(trElem => {
-        this.tracksPivot[trElem.Slot][trElem.Raum] = trElem;
+        this.tracksPivot[trElem.Slot][trElem.Raum] = trElem.Vortragende;
       });
-    });
-    this.timeslots.subscribe(ts => {
-      ts.forEach(tsElem => {
-        this.arrPivot.push({Zeit: tsElem.Slot, rooms: this.tracksPivot[tsElem.Slot]});
+      Object.keys(this.tracksPivot).forEach(k => {
+        this.arrPivot.push({Zeit: k, ...this.tracksPivot[k]});
       });
     });
   }

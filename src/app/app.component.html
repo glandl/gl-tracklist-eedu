@@ -8,7 +8,7 @@
     <!-- Raum Columns -->
     <ng-container *ngFor="let disCol of roomNames; let colIndex = index" matColumnDef="{{disCol}}">
       <th mat-header-cell *matHeaderCellDef>{{disCol}}</th>
-      <td mat-cell *matCellDef="let element "> xxx </td>
+      <td mat-cell *matCellDef="let element ">{{element[disCol]} </td>
     </ng-container>
 
 
