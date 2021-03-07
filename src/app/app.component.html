@@ -1,14 +1,17 @@
 <section class="trackgrid">
-  <table mat-table [dataSource]="arrPivot">
+  <table mat-table [dataSource]="tableDS">
     <!-- Zeit Column -->
     <ng-container matColumnDef="Zeit">
-      <th mat-header-cell *matHeaderCellDef> Zeit </th>
+      <th mat-header-cell *matHeaderCellDef class="timeslot"> Zeit </th>
       <td mat-cell *matCellDef="let element" class="timeslot"> <div  [innerHTML]="element.Zeit"></div> </td>
     </ng-container>
     <!-- Raum Columns -->
     <ng-container *ngFor="let disCol of roomNames; let colIndex = index" matColumnDef="{{disCol}}">
-      <th mat-header-cell *matHeaderCellDef>{{disCol}} </th>
-      <td mat-cell *matCellDef="let element "><div [innerHTML]="element[disCol]['Vortragende']"></div> </td>
+      <th mat-header-cell *matHeaderCellDef class="timeslot">{{disCol}} </th>
+      <td mat-cell *matCellDef="let element " [ngClass]="element[disCol]['dkStyle']">
+        <a *ngIf="element[disCol]['DetailLink'] !== ''" [href]="element[disCol]['DetailLink']" target="_blank"><div [innerHTML]="element[disCol]['Vortragende']"></div></a>
+        <div *ngIf="element[disCol]['DetailLink'] === ''" [innerHTML]="element[disCol]['Vortragende']"></div>
+      </td>
     </ng-container>
 
 

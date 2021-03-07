@@ -5,15 +5,16 @@ export const trackentryAttributesMapping = {
   D: 'D',
   Slot: 'Slot',
   Raum: 'Raum',
-  dk4: '4',
-  dk8: '8',
-  dk12: '12',
+  dk4: 'dk4',
+  dk8: 'dk8',
+  dk12: 'dk12',
   dkP: 'P',
   Tech: 'Tech',
   Vorname: 'Vorname',
   Nachname: 'Nachname',
   Titel: 'Titel',
-  DetailLink: 'DetailLink'
+  DetailLink: 'DetailLink',
+  dkStyle: 'dkStyle',
 };
 
 export interface TrackEntry {
@@ -32,4 +33,5 @@ export interface TrackEntry {
   Nachname: string;
   Titel: string;
   DetailLink: string;
+  dkStyle: string;
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTable } from '@angular/material/table';
+import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { GoogleSheetsDbService } from 'ng-google-sheets-db';
 import { Observable } from 'rxjs';
 import { last } from 'rxjs/operators';
@@ -18,7 +18,8 @@ export class AppComponent implements OnInit{
   public displayedColumns: string[] = ['Zeit'];
   @ViewChild(MatTable) table: MatTable<any>;
 
-  public tracks$: Observable<any[]>;
+  public tracks$: Observable<TrackEntry[]>;
+  public arrTracks: TrackEntry[] = [];
   public rooms$: Observable<Room[]>;
   public timeslots$: Observable<TimeSlot[]>;
   public tracksPivot: Record<string,any> = {};
@@ -28,7 +29,7 @@ export class AppComponent implements OnInit{
   private bDataReady: boolean = false;
 
   public arrPivot: any[] = [];
-
+  public tableDS = new MatTableDataSource([]);
 
   constructor(private googleSheetsDbService: GoogleSheetsDbService) {
 
@@ -59,7 +60,7 @@ export class AppComponent implements OnInit{
       timeslot.forEach(ts => {
         this.tracksPivot[ts['Slot']] = {};
         this.roomNames.forEach(rn => {
-          this.tracksPivot[ts['Slot']][rn] = {} as TrackEvent;
+          this.tracksPivot[ts['Slot']][rn] = {} as TrackEntry;
         });
       });
     },
@@ -69,14 +70,22 @@ export class AppComponent implements OnInit{
 
   generateTrackPivot(): void {
     this.tracks$.pipe(last(),).subscribe(tr => {
-      tr.forEach(trElem => {
-        this.tracksPivot[trElem.Slot][trElem.Raum] = trElem;
-      });
-      Object.keys(this.tracksPivot).forEach(k => {
-        this.arrPivot.push({Zeit: k, ...this.tracksPivot[k]});
-      });
+      this.arrTracks = tr;
+      this.filterTable();
     },
     err => {},
-    () => { this.table.renderRows()});
+    () => {
+      this.tableDS = new MatTableDataSource(this.arrPivot);
+      this.table.renderRows();
+    });
+  }
+
+  filterTable(): void{
+    this.arrTracks.forEach(trElem => {
+      this.tracksPivot[trElem.Slot][trElem.Raum] = trElem;
+    });
+    Object.keys(this.tracksPivot).forEach(k => {
+      this.arrPivot.push({Zeit: k, ...this.tracksPivot[k]});
+    });
   }
 }
