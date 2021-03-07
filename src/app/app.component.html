@@ -3,12 +3,12 @@
     <!-- Zeit Column -->
     <ng-container matColumnDef="Zeit">
       <th mat-header-cell *matHeaderCellDef> Zeit </th>
-      <td mat-cell *matCellDef="let element"> {{element.Zeit}} </td>
+      <td mat-cell *matCellDef="let element" class="timeslot"> <div  [innerHTML]="element.Zeit"></div> </td>
     </ng-container>
     <!-- Raum Columns -->
     <ng-container *ngFor="let disCol of roomNames; let colIndex = index" matColumnDef="{{disCol}}">
-      <th mat-header-cell *matHeaderCellDef>{{disCol}}</th>
-      <td mat-cell *matCellDef="let element ">{{element[disCol]} </td>
+      <th mat-header-cell *matHeaderCellDef>{{disCol}} </th>
+      <td mat-cell *matCellDef="let element "><div [innerHTML]="element[disCol]['Vortragende']"></div> </td>
     </ng-container>
 
 

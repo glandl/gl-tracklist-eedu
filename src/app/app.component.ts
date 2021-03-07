@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTable } from '@angular/material/table';
 import { GoogleSheetsDbService } from 'ng-google-sheets-db';
 import { Observable } from 'rxjs';
+import { last } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Room, roomAttributesMapping } from './shared/model/room';
 import { TimeSlot, timeslotAttributesMapping } from './shared/model/time-slot';
@@ -14,26 +16,28 @@ import { TrackEntry, trackentryAttributesMapping } from './shared/model/track-en
 export class AppComponent implements OnInit{
   title: string = 'eEducation Event Tracklist';
   public displayedColumns: string[] = ['Zeit'];
+  @ViewChild(MatTable) table: MatTable<any>;
 
-  public tracks$: Observable<TrackEntry[]>;
+  public tracks$: Observable<any[]>;
   public rooms$: Observable<Room[]>;
   public timeslots$: Observable<TimeSlot[]>;
   public tracksPivot: Record<string,any> = {};
-  public arrPivot: any[] = [];
-
 
   public roomNames: string[] = [];
   public rooms: Record<string, Room> = {};
+  private bDataReady: boolean = false;
 
+  public arrPivot: any[] = [];
 
 
   constructor(private googleSheetsDbService: GoogleSheetsDbService) {
-    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Rooms.spreadsheetID, environment.Rooms.worksheetID, roomAttributesMapping);
-    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Tracks.spreadsheetID, environment.Tracks.worksheetID, trackentryAttributesMapping);
-    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Tracks.spreadsheetID, environment.TimeSlots.worksheetID, timeslotAttributesMapping);
+
   }
 
   ngOnInit(): void {
+    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Rooms.spreadsheetID, environment.Rooms.worksheetID, roomAttributesMapping);
+    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Tracks.spreadsheetID, environment.Tracks.worksheetID, trackentryAttributesMapping);
+    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Tracks.spreadsheetID, environment.TimeSlots.worksheetID, timeslotAttributesMapping);
     this.getRooms();
   }
 
@@ -55,7 +59,7 @@ export class AppComponent implements OnInit{
       timeslot.forEach(ts => {
         this.tracksPivot[ts['Slot']] = {};
         this.roomNames.forEach(rn => {
-          this.tracksPivot[ts['Slot']][rn] = 'NN';
+          this.tracksPivot[ts['Slot']][rn] = {} as TrackEvent;
         });
       });
     },
@@ -64,13 +68,15 @@ export class AppComponent implements OnInit{
   }
 
   generateTrackPivot(): void {
-    this.tracks$.subscribe(tr => {
+    this.tracks$.pipe(last(),).subscribe(tr => {
       tr.forEach(trElem => {
-        this.tracksPivot[trElem.Slot][trElem.Raum] = trElem.Vortragende;
+        this.tracksPivot[trElem.Slot][trElem.Raum] = trElem;
       });
       Object.keys(this.tracksPivot).forEach(k => {
         this.arrPivot.push({Zeit: k, ...this.tracksPivot[k]});
       });
-    });
+    },
+    err => {},
+    () => { this.table.renderRows()});
   }
 }
