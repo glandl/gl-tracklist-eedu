@@ -26,3 +26,10 @@ a{
   background-color: rgb(74 141 155);
 }
 
+.mat-row {
+  height: auto;
+}
+
+.mat-cell, .mat-header-cell {
+  padding: 8px 8px 8px 8px;
+}
