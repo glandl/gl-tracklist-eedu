@@ -33,3 +33,12 @@ a{
 .mat-cell, .mat-header-cell {
   padding: 8px 8px 8px 8px;
 }
+
+.mat-grid-tile {
+  overflow: hidden;
+}
+
+.mat-grid-tile img {
+  width: 100%;
+  height: auto;
+}
