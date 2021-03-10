@@ -9,6 +9,7 @@ import { GoogleSheetsDbService } from 'ng-google-sheets-db';
 import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list';
+import {MatToolbarModule} from '@angular/material/toolbar';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 
@@ -24,7 +25,8 @@ import { FormsModule } from '@angular/forms';
     HttpClientModule,
     MatTableModule,
     MatCheckboxModule,
-    MatGridListModule
+    MatGridListModule,
+    MatToolbarModule
   ],
   providers: [ GoogleSheetsDbService ],
   bootstrap: [AppComponent]
