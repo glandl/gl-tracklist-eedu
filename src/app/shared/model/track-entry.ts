@@ -15,6 +15,7 @@ export const trackentryAttributesMapping = {
   Titel: 'Titel',
   DetailLink: 'DetailLink',
   dkStyle: 'dkStyle',
+  Beschreibungstext: 'Beschreibungstext',
 };
 
 export interface TrackEntry {
@@ -34,4 +35,5 @@ export interface TrackEntry {
   Titel: string;
   DetailLink: string;
   dkStyle: string;
+  Beschreibungstext: string;
 }
