@@ -26,6 +26,7 @@ a{
   background-color: rgb(74 141 155);
 }
 
+
 .mat-row {
   height: auto;
 }
@@ -39,6 +40,7 @@ a{
 }
 
 .mat-grid-tile img {
+  max-width: 144px;
   width: 100%;
   height: auto;
 }
