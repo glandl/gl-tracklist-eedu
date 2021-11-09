@@ -30,15 +30,17 @@ export class AppComponent implements OnInit{
 
   public arrPivot: any[] = [];
   public tableDS = new MatTableDataSource([]);
+  public arrEvents: any[] = environment.Events;
+  public selectedEvent: number = 0;
 
   constructor(private googleSheetsDbService: GoogleSheetsDbService) {
 
   }
 
   ngOnInit(): void {
-    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Rooms.spreadsheetID, environment.Rooms.worksheetID, roomAttributesMapping);
-    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Tracks.spreadsheetID, environment.Tracks.worksheetID, trackentryAttributesMapping);
-    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Tracks.spreadsheetID, environment.TimeSlots.worksheetID, timeslotAttributesMapping);
+    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
+    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
+    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
     this.getRooms();
   }
 
@@ -87,5 +89,15 @@ export class AppComponent implements OnInit{
     Object.keys(this.tracksPivot).forEach(k => {
       this.arrPivot.push({Zeit: k, ...this.tracksPivot[k]});
     });
+  }
+
+  OnEventChanged(){
+    this.arrPivot = [];
+    this.arrTracks = [];
+    this.roomNames = [];
+    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
+    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
+    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
+    this.getRooms();
   }
 }
