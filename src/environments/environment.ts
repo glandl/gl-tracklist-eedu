@@ -6,6 +6,24 @@ export const environment = {
   production: false,
   Events: [
     {
+      Name: 'Praxistage 2022',
+      Tracks: {
+        spreadsheetID: '1E63dwxQXP_dQ4pRdUGbblIvzXVBKojkT0Z_R47T_Xdo',
+        worksheetID: 2,
+        worksheetName: 'Tracks',
+      },
+      Rooms: {
+        spreadsheetID: '1E63dwxQXP_dQ4pRdUGbblIvzXVBKojkT0Z_R47T_Xdo',
+        worksheetID: 3,
+        worksheetName: 'Räume',
+      },
+      TimeSlots: {
+        spreadsheetID: '1E63dwxQXP_dQ4pRdUGbblIvzXVBKojkT0Z_R47T_Xdo',
+        worksheetID: 4,
+        worksheetName: 'Slots',
+      }
+    },
+    {
       Name: 'Fachtagung 2021',
       Tracks: {
         spreadsheetID: '1Nh4XvYK-856hwLOTzgnEtMT4GFvg-l3yeiellUrnoEw',
