@@ -29,6 +29,8 @@
             ],
             "styles": [
               "src/gl-theme.scss",
+              "src/fonts.css",
+              "src/icons.css",
               "src/styles.scss"
             ],
             "scripts": []
