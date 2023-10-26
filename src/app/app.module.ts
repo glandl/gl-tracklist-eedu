@@ -36,7 +36,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
   ],
   providers: [ {
     provide: API_KEY,
-    useValue: ''
+    useValue: 'Find it in the Google Sheets API dashboard'
   }
   ,GoogleSheetsDbService ],
   bootstrap: [AppComponent]
