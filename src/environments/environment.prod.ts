@@ -2,6 +2,24 @@ export const environment = {
   production: true,
   Events: [
     {
+      Name: 'Fachtagung 2024',
+      Tracks: {
+        spreadsheetID: '1mpbvEUW4iqpGzwTSBJKtDER0KNtr53Ivsif1kgbec9w',
+        worksheetID: 2,
+        worksheetName: 'Tracks',
+      },
+      Rooms: {
+        spreadsheetID: '1mpbvEUW4iqpGzwTSBJKtDER0KNtr53Ivsif1kgbec9w',
+        worksheetID: 3,
+        worksheetName: 'Räume',
+      },
+      TimeSlots: {
+        spreadsheetID: '1mpbvEUW4iqpGzwTSBJKtDER0KNtr53Ivsif1kgbec9w',
+        worksheetID: 4,
+        worksheetName: 'Slots',
+      }
+    },
+    {
       Name: 'Praxistage 2024',
       Tracks: {
         spreadsheetID: '1yZJIB9oVQL8GWNSi9yllqUlPlbNDrfr4ESqub26t_E8',
