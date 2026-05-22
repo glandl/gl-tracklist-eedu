@@ -4,9 +4,9 @@
     <mat-grid-tile colspan="1" rowspan="1">
       <svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="255px" height="61px" viewBox="0 0 255 61" enable-background="new 0 0 255 61" xml:space="preserve">
         <switch>
-        <g>
-        <g>
-          <path fill="#6EA82E" d="M67.71,27.152h17.233v2.06H67.71v11.602h18.579v2.185H65.483V13.576h20.302v2.143H67.71V27.152z"></path>
+          <g>
+            <g>
+              <path fill="#6EA82E" d="M67.71,27.152h17.233v2.06H67.71v11.602h18.579v2.185H65.483V13.576h20.302v2.143H67.71V27.152z"></path>
           <path fill="#6EA82E" d="M110.835,13.576v29.422h-2.017v-4.582c-1.724,3.153-5.128,4.918-8.659,4.918
             c-5.801,0-10.382-3.825-10.382-10.718c0-6.853,4.624-10.718,10.424-10.718c3.573,0,6.935,1.513,8.617,4.875V13.576H110.835z
               M91.794,32.616c0,5.758,3.825,8.702,8.491,8.702c4.875,0,8.491-3.574,8.491-8.744s-3.699-8.7-8.491-8.7
@@ -29,42 +29,44 @@
             c-4.708,0-8.533,3.488-8.533,8.869s3.825,8.617,8.533,8.617C225.62,41.275,229.445,38.039,229.445,32.658z"></path>
           <path fill="#6EA82E" d="M238.229,22.234v3.697c1.599-2.856,4.498-4.034,7.398-4.076c5.549,0,9.373,3.404,9.373,9.162v11.979h-2.061
             V31.061c0-4.708-2.899-7.229-7.396-7.187c-4.288,0.042-7.271,3.278-7.271,7.565v11.559h-2.06V22.234H238.229z"></path>
-        </g>
-        <g>
+            </g>
+            <g>
           <path fill="#1D7B8B" d="M14.768,45.977c-4.168-4.168-6.464-9.71-6.463-15.604c0-5.896,2.296-11.438,6.464-15.605l1.772,1.771
             c-3.695,3.696-5.731,8.607-5.731,13.833s2.035,10.139,5.73,13.833c7.628,7.628,20.038,7.627,27.666,0
             c7.627-7.627,7.627-20.038,0-27.666l1.772-1.771c8.604,8.604,8.605,22.605,0,31.209C37.373,54.581,23.372,54.581,14.768,45.977z"></path>
-        </g>
-        <g>
+            </g>
+            <g>
           <path fill="#6EA82E" d="M11.832,48.913c-4.75-4.75-7.691-11.308-7.691-18.541c0-14.463,11.767-26.23,26.232-26.231
             c7.006,0,13.594,2.729,18.548,7.684l0,0c4.955,4.954,7.683,11.542,7.683,18.549h-2.505c0-6.338-2.468-12.296-6.949-16.777
             c-4.483-4.481-10.44-6.949-16.778-6.949C17.29,6.646,6.646,17.29,6.645,30.373c0,13.083,10.645,23.726,23.727,23.727v2.504
             C23.14,56.604,16.582,53.663,11.832,48.913z"></path>
-        </g>
-        <g>
+            </g>
+            <g>
           <path fill="#8E1558" d="M8.896,51.851C8.895,51.851,8.896,51.851,8.896,51.851C3.158,46.114,0,38.485,0,30.373
             c-0.001-8.113,3.158-15.74,8.895-21.479C14.632,3.159,22.259,0,30.373,0c8.112,0,15.74,3.159,21.477,8.896l-1.772,1.771
             c-5.263-5.263-12.261-8.162-19.705-8.162s-14.442,2.899-19.706,8.162c-5.264,5.264-8.161,12.26-8.163,19.706
             c0.001,7.443,2.899,14.441,8.163,19.706c5.264,5.264,12.262,8.162,19.706,8.162s14.441-2.899,19.705-8.162l1.772,1.771
             c-5.737,5.736-13.364,8.896-21.477,8.896C22.26,60.748,14.632,57.587,8.896,51.851z"></path>
-        </g>
-        <g>
+            </g>
+            <g>
           <path fill="#6EA82E" d="M20.31,30.447c0-5.935,4.491-10.225,10.064-10.225c5.574,0,10.545,3.408,9.784,11.146H22.315
             c0.4,4.65,3.969,7.338,8.059,7.338c2.606,0,5.654-1.042,7.137-3.007l1.403,1.123c-1.925,2.525-5.373,3.809-8.541,3.809
             C24.801,40.632,20.31,36.743,20.31,30.447z M38.394,29.646c-0.041-4.893-3.248-7.619-8.02-7.619c-4.09,0-7.619,2.767-8.059,7.619
             H38.394z"></path>
-        </g>
-      </g>
+            </g>
+          </g>
 
-      </switch>
+        </switch>
 
       </svg>
       <mat-form-field appearance="fill">
         <mat-label>Veranstaltung</mat-label>
         <mat-select [(value)]="selectedEvent" (selectionChange)="OnEventChanged()">
-          <mat-option *ngFor="let event of arrEvents;let i = index" [value]="i">
-            {{event.Name}}
-          </mat-option>
+          @for (event of arrEvents; track event; let i = $index) {
+            <mat-option [value]="i">
+              {{event.Name}}
+            </mat-option>
+          }
         </mat-select>
       </mat-form-field>
     </mat-grid-tile>
@@ -83,20 +85,26 @@
       <td mat-cell *matCellDef="let element" class="timeslot"> <div  [innerHTML]="element.Zeit"></div> </td>
     </ng-container>
     <!-- Raum Columns -->
-    <ng-container *ngFor="let disCol of roomNames; let colIndex = index" matColumnDef="{{disCol}}">
-      <th mat-header-cell *matHeaderCellDef class="timeslot"> <div *ngIf="rooms[disCol].RaumLink === '';else RoomWLink"><div>{{disCol}}</div></div>
-        <ng-template #RoomWLink><a [href]="rooms[disCol].RaumLink" target="_blank"><div>{{disCol}}</div></a></ng-template>
+    @for (disCol of roomNames; track disCol; let colIndex = $index) {
+      <ng-container matColumnDef="{{disCol}}">
+        <th mat-header-cell *matHeaderCellDef class="timeslot"> @if (rooms[disCol].RaumLink === '') {
+          <div><div>{{disCol}}</div></div>
+        } @else {
+          <a [href]="rooms[disCol].RaumLink" target="_blank"><div>{{disCol}}</div></a>
+        }
       </th>
       <td mat-cell *matCellDef="let element " [ngClass]="(element[disCol] ? element[disCol]['dkStyle'] : '')">
-        <div *ngIf="rooms[disCol].RaumLink === '';else ElementWLink"><div [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')" [matTooltip]="(element[disCol] ? element[disCol]['Beschreibungstext'] : '')"></div></div>
-        <ng-template #ElementWLink>
+        @if (rooms[disCol].RaumLink === '') {
+          <div><div [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')" [matTooltip]="(element[disCol] ? element[disCol]['Beschreibungstext'] : '')"></div></div>
+        } @else {
           <a [href]="rooms[disCol].RaumLink" target="_blank"><div [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')" [matTooltip]="element[disCol]['Beschreibungstext']"></div></a>
-        </ng-template>
+        }
       </td>
     </ng-container>
+  }
 
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns.concat(roomNames)"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns.concat(roomNames);"></tr>
-  </table>
+  <tr mat-header-row *matHeaderRowDef="displayedColumns.concat(roomNames)"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns.concat(roomNames);"></tr>
+</table>
 </section>

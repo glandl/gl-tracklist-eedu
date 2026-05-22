@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { GoogleSheetsDbService } from 'ng-google-sheets-db';
+import { GoogleSheetsService } from './shared/google-sheets.service';
 import { Observable } from 'rxjs';
 import { last } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -9,9 +9,10 @@ import { TimeSlot, timeslotAttributesMapping } from './shared/model/time-slot';
 import { TrackEntry, trackentryAttributesMapping } from './shared/model/track-entry';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit{
   title: string = 'eEducation Event Tracklist';
@@ -33,14 +34,12 @@ export class AppComponent implements OnInit{
   public arrEvents: any[] = environment.Events;
   public selectedEvent: number = 0;
 
-  constructor(private googleSheetsDbService: GoogleSheetsDbService) {
-
-  }
+  constructor(private googleSheetsService: GoogleSheetsService) {}
 
   ngOnInit(): void {
-    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
-    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
-    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
+    this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
+    this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
+    this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
     this.getRooms();
   }
 
@@ -95,9 +94,9 @@ export class AppComponent implements OnInit{
     this.arrPivot = [];
     this.arrTracks = [];
     this.roomNames = [];
-    this.rooms$ = this.googleSheetsDbService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
-    this.tracks$ = this.googleSheetsDbService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
-    this.timeslots$ = this.googleSheetsDbService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
+    this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
+    this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
+    this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
     this.getRooms();
   }
 }
