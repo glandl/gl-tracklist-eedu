@@ -35,3 +35,7 @@ _Avoid_: Description, abstract, detail text
 **DigiKomp**:
 An Austrian digital competency framework. Each TrackEntry is tagged with one or more DigiKomp levels (4, 8, 12, P), surfaced as a CSS style class (`dkStyle`) and numeric fields (`dk4`, `dk8`, `dk12`, `dkP`).
 _Avoid_: Category, tag, competency level
+
+**Favoritenliste**:
+A user's personal collection of TrackEntries they plan to attend, stored locally in the browser (localStorage). Identified by stable TrackEntry UIDs so entries survive rescheduling.
+_Avoid_: Bookmarks, Merkliste, Watchlist, personal track list
