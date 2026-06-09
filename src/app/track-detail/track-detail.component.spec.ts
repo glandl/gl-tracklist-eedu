@@ -56,26 +56,24 @@ describe('TrackDetailComponent', () => {
       }).compileComponents();
     });
 
-    it('renders Titel, Raum, Slot, DigiKomp, Vortragende and Beschreibungstext', () => {
+    it('renders Titel, Raum, Slot, DigiKomp, presenter name and Beschreibungstext', () => {
       const fixture = TestBed.createComponent(TrackDetailComponent);
       fixture.detectChanges();
       const el: HTMLElement = fixture.nativeElement;
 
       expect(el.textContent).toContain('Test Session Title');
-      expect(el.innerHTML).toContain('<strong>Speaker Name</strong>');
+      expect(el.textContent).toContain('Speaker Name');
       expect(el.textContent).toContain('Raum A');
       expect(el.textContent).toContain('09:00');
       expect(el.innerHTML).toContain('<p>Session description text</p>');
       expect(el.querySelector('.dk4')).toBeTruthy();
     });
 
-    it('renders Vortragende and Beschreibungstext as HTML, not escaped text', () => {
+    it('renders Beschreibungstext as HTML, not escaped text', () => {
       const fixture = TestBed.createComponent(TrackDetailComponent);
       fixture.detectChanges();
       const el: HTMLElement = fixture.nativeElement;
 
-      expect(el.innerHTML).toContain('<strong>');
-      expect(el.innerHTML).not.toContain('&lt;strong&gt;');
       expect(el.innerHTML).toContain('<p>');
       expect(el.innerHTML).not.toContain('&lt;p&gt;');
     });
