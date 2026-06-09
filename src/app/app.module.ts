@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ScheduleComponent } from './schedule/schedule.component';
 import { TrackDetailComponent } from './track-detail/track-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SHEETS_API_KEY } from './shared/google-sheets.service';
@@ -21,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 @NgModule({ declarations: [
         AppComponent,
+        ScheduleComponent,
         TrackDetailComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
