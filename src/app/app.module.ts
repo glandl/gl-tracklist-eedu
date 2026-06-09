@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SHEETS_API_KEY } from './shared/google-sheets.service';
+import { sheetsApiKey } from '../environments/secrets';
 
 import {MatTableModule} from '@angular/material/table';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -30,7 +31,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         MatTooltipModule,
         MatSelectModule,
         MatFormFieldModule], providers: [
-        { provide: SHEETS_API_KEY, useValue: 'Generate key with Google Cloud Console' },
+        { provide: SHEETS_API_KEY, useValue: sheetsApiKey },
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class AppModule { }

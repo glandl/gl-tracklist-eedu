@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
+    "prestart": "node scripts/set-env.js",
     "start": "ng serve",
+    "prebuild": "node scripts/set-env.js",
     "build": "ng build",
     "test": "ng test"
   },
@@ -30,6 +32,7 @@
     "@types/jasmine": "~5.1.0",
     "@types/node": "^22.0.0",
     "angular-cli-ghpages": "^2.0.0",
+    "dotenv": "^17.4.2",
     "jasmine-core": "~5.4.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
