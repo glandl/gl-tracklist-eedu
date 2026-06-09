@@ -1,10 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { RouteReuseStrategy } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { TrackDetailComponent } from './track-detail/track-detail.component';
+import { ScheduleReuseStrategy } from './schedule-reuse-strategy';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SHEETS_API_KEY } from './shared/google-sheets.service';
 import { sheetsApiKey } from '../environments/secrets';
@@ -38,6 +40,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         MatSelectModule,
         MatFormFieldModule], providers: [
         { provide: SHEETS_API_KEY, useValue: sheetsApiKey },
+        { provide: RouteReuseStrategy, useClass: ScheduleReuseStrategy },
         provideHttpClient(withInterceptorsFromDi())
     ] })
 export class AppModule { }
