@@ -1,0 +1,28 @@
+<mat-toolbar>
+  <button mat-icon-button (click)="goBack()">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+  <span>{{ eventName || 'Session Details' }}</span>
+</mat-toolbar>
+
+@if (loading) {
+  <div class="loading">Wird geladen…</div>
+} @else if (track) {
+  <div class="detail">
+    <h1 [innerHTML]="track.Titel"></h1>
+
+    <div class="meta">
+      <span class="slot">{{ track.Slot }}</span>
+      <span class="room">{{ track.Raum }}</span>
+      @if (track.dkStyle) {
+        <span class="digikomp-badge" [ngClass]="track.dkStyle">{{ digiKompLabel }}</span>
+      }
+    </div>
+
+    <div class="presenter">{{ track.Vorname }} {{ track.Nachname }}</div>
+
+    <div class="description" [innerHTML]="track.Beschreibungstext"></div>
+  </div>
+} @else {
+  <div class="empty-state">Session nicht gefunden.</div>
+}
