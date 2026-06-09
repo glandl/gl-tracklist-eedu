@@ -26,8 +26,8 @@ export class AppComponent implements OnInit{
   public tracksPivot: Record<string,any> = {};
 
   public roomNames: string[] = [];
+  public allColumns: string[] = ['Zeit'];
   public rooms: Record<string, Room> = {};
-  private bDataReady: boolean = false;
 
   public arrPivot: any[] = [];
   public tableDS = new MatTableDataSource([]);
@@ -52,7 +52,10 @@ export class AppComponent implements OnInit{
       });
     },
     err => {},
-    () => { this.getTimeSlots(); });
+    () => {
+      this.allColumns = ['Zeit', ...this.roomNames];
+      this.getTimeSlots();
+    });
   }
 
   getTimeSlots(): void{
@@ -94,6 +97,7 @@ export class AppComponent implements OnInit{
     this.arrPivot = [];
     this.arrTracks = [];
     this.roomNames = [];
+    this.allColumns = ['Zeit'];
     this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
     this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
     this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
