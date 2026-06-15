@@ -86,6 +86,9 @@ export class ScheduleComponent implements OnInit {
 
   filterTable(): void {
     this.arrTracks.forEach(trElem => {
+      if (!this.tracksPivot[trElem.Slot] || !(trElem.Raum in this.tracksPivot[trElem.Slot])) {
+        return;
+      }
       this.tracksPivot[trElem.Slot][trElem.Raum] = trElem;
     });
     Object.keys(this.tracksPivot).forEach(k => {
