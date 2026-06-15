@@ -10,6 +10,7 @@ import { TrackEntry } from '../shared/model/track-entry';
 
 const fixtureTrack: TrackEntry = {
   id: '1',
+  SessionID: '101',
   Titel: 'Test Session Title',
   Vortragende: '<strong>Speaker Name</strong>',
   Beschreibungstext: '<p>Session description text</p>',
