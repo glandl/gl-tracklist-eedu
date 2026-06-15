@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
-import { TrackEntry, trackentryAttributesMapping } from '../shared/model/track-entry';
+import { TrackEntry, trackentryAttributesMapping, getDigiKompLabel } from '../shared/model/track-entry';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -71,14 +71,7 @@ export class TrackDetailComponent implements OnInit {
   }
 
   get digiKompLabel(): string {
-    const labels: Record<string, string> = {
-      dk4: 'DigiKomp 4',
-      dk8: 'DigiKomp 8',
-      dk12: 'DigiKomp 12',
-      dkP: 'DigiKomp P',
-      dkTech: 'DigiKomp Tech',
-    };
-    return labels[this.track?.dkStyle ?? ''] ?? '';
+    return getDigiKompLabel(this.track?.dkStyle);
   }
 
   get canFavorite(): boolean {

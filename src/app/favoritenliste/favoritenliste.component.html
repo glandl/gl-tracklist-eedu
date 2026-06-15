@@ -5,11 +5,11 @@
   <span>{{ eventName || 'Favoritenliste' }}</span>
 </mat-toolbar>
 
-@if (loading) {
-  <div class="loading">Wird geladen…</div>
-} @else if (entries$ | async; as entries) {
+@if (entries$ | async; as entries) {
   @if (entries.length === 0) {
-    <div class="empty-state">Deine Favoritenliste ist leer. Markiere Sessions mit dem Stern, um sie hier zu sehen.</div>
+    <div class="empty-state">
+      <p>Deine Favoritenliste ist leer. Markiere Sessions mit dem Stern, um sie hier zu sehen.</p>
+    </div>
   } @else {
     <ul class="favorites">
       @for (entry of entries; track entry.uid) {
@@ -20,18 +20,20 @@
         } @else {
           <li class="favorite"
               [routerLink]="['/detail', eventIndex, entry.track!.Slot, entry.track!.Raum]">
-            <div class="title" [innerHTML]="entry.track!.Titel"></div>
             <div class="meta">
               <span class="slot">{{ entry.track!.Slot }}</span>
               <span class="room">{{ entry.track!.Raum }}</span>
               @if (entry.track!.dkStyle) {
-                <span class="digikomp-badge" [ngClass]="entry.track!.dkStyle">{{ entry.track!.DigiKomp }}</span>
+                <span class="digikomp-badge" [ngClass]="entry.track!.dkStyle">{{ digiKompLabel(entry.track!) }}</span>
               }
             </div>
-            <div class="presenter" [innerHTML]="entry.track!.Vortragende"></div>
+            <div class="presenter">{{ entry.track!.Vorname }} {{ entry.track!.Nachname }}</div>
+            <div class="title" [innerHTML]="entry.track!.Titel"></div>
           </li>
         }
       }
     </ul>
   }
+} @else {
+  <div class="loading">Wird geladen…</div>
 }

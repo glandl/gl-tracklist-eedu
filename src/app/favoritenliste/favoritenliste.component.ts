@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { combineLatest, Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, timeout } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
-import { TrackEntry, trackentryAttributesMapping } from '../shared/model/track-entry';
+import { TrackEntry, trackentryAttributesMapping, getDigiKompLabel } from '../shared/model/track-entry';
 import { TimeSlot, timeslotAttributesMapping } from '../shared/model/time-slot';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
 
@@ -24,7 +24,6 @@ export interface FavoritenlisteEntry {
 export class FavoritenlisteComponent implements OnInit {
   eventIndex = 0;
   eventName = '';
-  loading = true;
   entries$: Observable<FavoritenlisteEntry[]> = of([]);
 
   constructor(
@@ -38,7 +37,6 @@ export class FavoritenlisteComponent implements OnInit {
     this.eventIndex = Number(this.route.snapshot.paramMap.get('eventIndex') ?? '0');
     const event = environment.Events[this.eventIndex];
     if (!event) {
-      this.loading = false;
       return;
     }
     this.eventName = event.Name;
@@ -48,6 +46,7 @@ export class FavoritenlisteComponent implements OnInit {
       event.Tracks.worksheetName,
       trackentryAttributesMapping
     ).pipe(
+      timeout(10000),
       catchError(() => of([] as TrackEntry[]))
     );
     const timeslots$ = this.googleSheetsService.get<TimeSlot>(
@@ -55,19 +54,14 @@ export class FavoritenlisteComponent implements OnInit {
       event.TimeSlots.worksheetName,
       timeslotAttributesMapping
     ).pipe(
+      timeout(10000),
       catchError(() => of([] as TimeSlot[]))
     );
     const favorites$ = this.favoritenliste.list$(event.Tracks.spreadsheetID);
 
     this.entries$ = combineLatest([tracks$, timeslots$, favorites$]).pipe(
-      map(([tracks, timeslots, favorites]) => {
-        this.loading = false;
-        return this.buildEntries(tracks, timeslots, favorites);
-      }),
-      catchError(() => {
-        this.loading = false;
-        return of([] as FavoritenlisteEntry[]);
-      })
+      map(([tracks, timeslots, favorites]) => this.buildEntries(tracks, timeslots, favorites)),
+      catchError(() => of([] as FavoritenlisteEntry[]))
     );
   }
 
@@ -95,6 +89,10 @@ export class FavoritenlisteComponent implements OnInit {
     const orderOf = (entry: FavoritenlisteEntry) =>
       entry.track ? slotOrder.get(entry.track.Slot) ?? Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
     return entries.sort((a, b) => orderOf(a) - orderOf(b));
+  }
+
+  digiKompLabel(track: TrackEntry): string {
+    return getDigiKompLabel(track.dkStyle);
   }
 
   goBack(): void {

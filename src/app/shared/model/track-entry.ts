@@ -19,6 +19,18 @@ export const trackentryAttributesMapping = {
   Beschreibungstext: 'Beschreibungstext',
 };
 
+const digiKompLabels: Record<string, string> = {
+  dk4: 'DigiKomp 4',
+  dk8: 'DigiKomp 8',
+  dk12: 'DigiKomp 12',
+  dkP: 'DigiKomp P',
+  dkTech: 'DigiKomp Tech',
+};
+
+export function getDigiKompLabel(dkStyle: string | undefined): string {
+  return digiKompLabels[dkStyle ?? ''] ?? '';
+}
+
 export interface TrackEntry {
   id: string;
   SessionID: string;
