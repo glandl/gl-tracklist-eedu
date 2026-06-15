@@ -1,5 +1,6 @@
 export const trackentryAttributesMapping = {
   id: 'id',
+  SessionID: 'SessionID',
   DigiKomp: 'DigiKomp',
   Vortragende: 'Vortragende',
   D: 'D',
@@ -20,6 +21,7 @@ export const trackentryAttributesMapping = {
 
 export interface TrackEntry {
   id: string;
+  SessionID: string;
   DigiKomp: string;
   Vortragende: string;
   D: number;
