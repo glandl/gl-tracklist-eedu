@@ -2,7 +2,7 @@
   <button mat-icon-button (click)="goBack()">
     <mat-icon>arrow_back</mat-icon>
   </button>
-  <span>{{ eventName || 'Favoritenliste' }}</span>
+  <span>{{ eventName + ' Favoritenliste' || 'Favoritenliste' }}</span>
 </mat-toolbar>
 
 @if (entries$ | async; as entries) {

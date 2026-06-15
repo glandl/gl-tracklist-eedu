@@ -78,3 +78,11 @@ td {
 .toolbar-spacer {
   flex: 1 1 auto;
 }
+
+.favorites-button {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000;
+  background-color: rgba(200 , 200, 200, 0.7);
+}

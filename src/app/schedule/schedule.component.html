@@ -1,21 +1,5 @@
 <mat-toolbar>
-  <span>eEducation Tagungsprogramme</span>
-  <span class="toolbar-spacer"></span>
-  <button
-    mat-icon-button
-    [matBadge]="favoriteCount$ | async"
-    [matBadgeHidden]="(favoriteCount$ | async) === 0"
-    matBadgePosition="before"
-    matBadgeColor="accent"
-    aria-label="Favoritenliste anzeigen"
-    (click)="navigateToFavorites()">
-    <mat-icon>star</mat-icon>
-  </button>
-</mat-toolbar>
-<section class="legende">
-  <mat-grid-list cols="5" rowHeight="160px">
-    <mat-grid-tile colspan="1" rowspan="1">
-      <svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="255px" height="61px" viewBox="0 0 255 61" enable-background="new 0 0 255 61" xml:space="preserve">
+     <svg version="1.1" id="Ebene_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="255px" height="61px" viewBox="0 0 255 61" enable-background="new 0 0 255 61" xml:space="preserve">
         <switch>
           <g>
             <g>
@@ -72,6 +56,22 @@
         </switch>
 
       </svg>
+  <span class="toolbar-spacer"></span>
+  <button
+    mat-icon-button
+    class="favorites-button"
+    [matBadge]="favoriteCount$ | async"
+    [matBadgeHidden]="(favoriteCount$ | async) === 0"
+    matBadgePosition="before"
+    matBadgeColor="accent"
+    aria-label="Favoritenliste anzeigen"
+    (click)="navigateToFavorites()">
+    <mat-icon>star</mat-icon>
+  </button>
+</mat-toolbar>
+<section class="legende">
+  <mat-grid-list cols="5" rowHeight="100px">
+    <mat-grid-tile colspan="1" rowspan="1">
       <mat-form-field appearance="fill">
         <mat-label>Veranstaltung</mat-label>
         <mat-select [(value)]="selectedEvent" (selectionChange)="OnEventChanged()">
@@ -83,10 +83,10 @@
         </mat-select>
       </mat-form-field>
     </mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_4.png"></mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_8.png"></mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_12.png"></mat-grid-tile>
-    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_p.png"></mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_4.png" style="height: 100px;width: 100px;"></mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_8.png" style="height: 100px;width: 100px;"></mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_12.png" style="height: 100px;width: 100px;"></mat-grid-tile>
+    <mat-grid-tile colspan="1" rowspan="1"><img src="./assets/img/digikompn_p.png" style="height: 100px;width: 100px;"></mat-grid-tile>
 
   </mat-grid-list>
 </section>
