@@ -7,6 +7,7 @@ import { NEVER } from 'rxjs';
 import { AppComponent } from './app.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { TrackDetailComponent } from './track-detail/track-detail.component';
+import { FavoritenlisteComponent } from './favoritenliste/favoritenliste.component';
 import { GoogleSheetsService, SHEETS_API_KEY } from './shared/google-sheets.service';
 
 describe('AppComponent', () => {
@@ -20,10 +21,11 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule.withRoutes([
           { path: '', component: ScheduleComponent },
+          { path: 'favorites/:eventIndex', component: FavoritenlisteComponent },
           { path: 'detail/:eventIndex/:slot/:room', component: TrackDetailComponent }
         ]),
       ],
-      declarations: [AppComponent, ScheduleComponent, TrackDetailComponent],
+      declarations: [AppComponent, ScheduleComponent, TrackDetailComponent, FavoritenlisteComponent],
       providers: [
         { provide: GoogleSheetsService, useValue: googleSheetsSpy },
         { provide: SHEETS_API_KEY, useValue: '' },
@@ -52,5 +54,14 @@ describe('AppComponent', () => {
     );
     expect(detailRoute).toBeTruthy();
     expect(detailRoute?.component).toBe(TrackDetailComponent);
+  });
+
+  it('should register the favoritenliste route for per-event favourites', () => {
+    const router = TestBed.inject(Router);
+    const favRoute = router.config.find(
+      r => r.path === 'favorites/:eventIndex'
+    );
+    expect(favRoute).toBeTruthy();
+    expect(favRoute?.component).toBe(FavoritenlisteComponent);
   });
 });
