@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
+import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { Observable } from 'rxjs';
 import { last } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
@@ -33,10 +34,15 @@ export class ScheduleComponent implements OnInit {
   public tableDS = new MatTableDataSource([]);
   public arrEvents: any[] = environment.Events;
   public selectedEvent: number = 0;
+  public spreadsheetId: string = '';
 
-  constructor(private googleSheetsService: GoogleSheetsService) {}
+  constructor(
+    private googleSheetsService: GoogleSheetsService,
+    private favoritenliste: FavoritenlisteService
+  ) {}
 
   ngOnInit(): void {
+    this.updateSpreadsheetId();
     this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
     this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
     this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
@@ -96,14 +102,33 @@ export class ScheduleComponent implements OnInit {
     });
   }
 
+  updateSpreadsheetId(): void {
+    const event = environment.Events[this.selectedEvent];
+    this.spreadsheetId = event?.Tracks?.spreadsheetID ?? '';
+  }
+
   OnEventChanged(): void {
     this.arrPivot = [];
     this.arrTracks = [];
     this.roomNames = [];
     this.allColumns = ['Zeit'];
+    this.updateSpreadsheetId();
     this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
     this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
     this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
     this.getRooms();
+  }
+
+  isFavorite(uid: string): boolean {
+    return this.favoritenliste.contains(uid, this.spreadsheetId);
+  }
+
+  toggleFavorite(uid: string, $event: MouseEvent): void {
+    $event.stopPropagation();
+    if (this.favoritenliste.contains(uid, this.spreadsheetId)) {
+      this.favoritenliste.remove(uid, this.spreadsheetId);
+    } else {
+      this.favoritenliste.add(uid, this.spreadsheetId);
+    }
   }
 }

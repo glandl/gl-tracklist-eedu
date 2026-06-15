@@ -94,6 +94,15 @@
         }
       </th>
       <td mat-cell *matCellDef="let element" [ngClass]="(element[disCol] ? element[disCol]['dkStyle'] : '')">
+        @if (element[disCol]?.SessionID) {
+          <button
+            mat-icon-button
+            class="favorite-star"
+            [attr.aria-label]="(isFavorite(element[disCol].SessionID) ? 'Aus Favoritenliste entfernen' : 'Zur Favoritenliste hinzufuegen')"
+            (click)="toggleFavorite(element[disCol].SessionID, $event)">
+            <mat-icon>{{ isFavorite(element[disCol].SessionID) ? 'star' : 'star_border' }}</mat-icon>
+          </button>
+        }
         <div
           [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')"
           [routerLink]="element[disCol]?.Vortragende ? ['/detail', selectedEvent, element.Zeit, disCol] : null"
