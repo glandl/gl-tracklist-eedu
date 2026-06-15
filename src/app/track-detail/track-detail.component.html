@@ -3,6 +3,13 @@
     <mat-icon>arrow_back</mat-icon>
   </button>
   <span>{{ eventName || 'Session Details' }}</span>
+  @if (track?.SessionID) {
+    <span class="spacer"></span>
+    <button mat-icon-button class="favorite-toggle" (click)="toggleFavorite()"
+            [attr.aria-pressed]="isFavorite$ | async">
+      <mat-icon>{{ (isFavorite$ | async) ? 'star' : 'star_border' }}</mat-icon>
+    </button>
+  }
 </mat-toolbar>
 
 @if (loading) {
