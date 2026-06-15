@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
+import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { TrackEntry, trackentryAttributesMapping } from '../shared/model/track-entry';
 import { environment } from 'src/environments/environment';
 
@@ -15,14 +18,17 @@ export class TrackDetailComponent implements OnInit {
   track: TrackEntry | null = null;
   loading = true;
   eventName = '';
+  isFavorite$: Observable<boolean> = of(false);
 
   private slot = '';
   private room = '';
+  private spreadsheetId = '';
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private googleSheetsService: GoogleSheetsService
+    private googleSheetsService: GoogleSheetsService,
+    private favoritenliste: FavoritenlisteService
   ) {}
 
   ngOnInit(): void {
@@ -37,6 +43,7 @@ export class TrackDetailComponent implements OnInit {
     }
 
     this.eventName = event.Name;
+    this.spreadsheetId = event.Tracks.spreadsheetID;
 
     this.googleSheetsService
       .get<TrackEntry>(
@@ -47,6 +54,12 @@ export class TrackDetailComponent implements OnInit {
       .subscribe({
         next: (tracks) => {
           this.track = tracks.find(t => t.Slot === this.slot && t.Raum === this.room) ?? null;
+          const uid = this.track?.SessionID;
+          this.isFavorite$ = uid
+            ? this.favoritenliste.list$(this.spreadsheetId).pipe(
+                map(list => list.includes(uid))
+              )
+            : of(false);
         },
         error: () => {
           this.loading = false;
@@ -66,6 +79,20 @@ export class TrackDetailComponent implements OnInit {
       dkTech: 'DigiKomp Tech',
     };
     return labels[this.track?.dkStyle ?? ''] ?? '';
+  }
+
+  get canFavorite(): boolean {
+    return !!this.track?.SessionID;
+  }
+
+  toggleFavorite(): void {
+    const uid = this.track?.SessionID;
+    if (!uid) return;
+    if (this.favoritenliste.contains(uid, this.spreadsheetId)) {
+      this.favoritenliste.remove(uid, this.spreadsheetId);
+    } else {
+      this.favoritenliste.add(uid, this.spreadsheetId);
+    }
   }
 
   goBack(): void {
