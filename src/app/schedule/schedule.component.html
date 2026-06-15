@@ -1,4 +1,17 @@
-<mat-toolbar><span>eEducation Tagungsprogramme</span></mat-toolbar>
+<mat-toolbar>
+  <span>eEducation Tagungsprogramme</span>
+  <span class="toolbar-spacer"></span>
+  <button
+    mat-icon-button
+    [matBadge]="favoriteCount$ | async"
+    [matBadgeHidden]="(favoriteCount$ | async) === 0"
+    matBadgePosition="before"
+    matBadgeColor="accent"
+    aria-label="Favoritenliste anzeigen"
+    (click)="navigateToFavorites()">
+    <mat-icon>star</mat-icon>
+  </button>
+</mat-toolbar>
 <section class="legende">
   <mat-grid-list cols="5" rowHeight="160px">
     <mat-grid-tile colspan="1" rowspan="1">

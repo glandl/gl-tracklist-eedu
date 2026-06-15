@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { Observable } from 'rxjs';
-import { last } from 'rxjs/operators';
+import { last, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Room, roomAttributesMapping } from '../shared/model/room';
 import { TimeSlot, timeslotAttributesMapping } from '../shared/model/time-slot';
@@ -35,10 +36,12 @@ export class ScheduleComponent implements OnInit {
   public arrEvents: any[] = environment.Events;
   public selectedEvent: number = 0;
   public spreadsheetId: string = '';
+  public favoriteCount$: Observable<number>;
 
   constructor(
     private googleSheetsService: GoogleSheetsService,
-    private favoritenliste: FavoritenlisteService
+    private favoritenliste: FavoritenlisteService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -105,6 +108,9 @@ export class ScheduleComponent implements OnInit {
   updateSpreadsheetId(): void {
     const event = environment.Events[this.selectedEvent];
     this.spreadsheetId = event?.Tracks?.spreadsheetID ?? '';
+    this.favoriteCount$ = this.favoritenliste.list$(this.spreadsheetId).pipe(
+      map(list => list.length)
+    );
   }
 
   OnEventChanged(): void {
@@ -130,5 +136,9 @@ export class ScheduleComponent implements OnInit {
     } else {
       this.favoritenliste.add(uid, this.spreadsheetId);
     }
+  }
+
+  navigateToFavorites(): void {
+    this.router.navigate(['/favorites', this.selectedEvent]);
   }
 }

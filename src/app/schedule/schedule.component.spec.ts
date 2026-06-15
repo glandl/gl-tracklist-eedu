@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
+import { Router } from '@angular/router';
 
 import { ScheduleComponent } from './schedule.component';
 import { GoogleSheetsService, SHEETS_API_KEY } from '../shared/google-sheets.service';
@@ -99,12 +100,14 @@ describe('ScheduleComponent', () => {
     const timeslots = [fixtureTimeSlot];
 
     const googleSheetsSpy = mockGoogleSheetsService(tracks, rooms, timeslots);
+    const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
       declarations: [ScheduleComponent],
       providers: [
         { provide: GoogleSheetsService, useValue: googleSheetsSpy },
         { provide: SHEETS_API_KEY, useValue: '' },
+        { provide: Router, useValue: routerSpy },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -232,6 +235,74 @@ describe('ScheduleComponent', () => {
       fixture.componentInstance.toggleFavorite('101', mockEvent as unknown as MouseEvent);
 
       expect(mockEvent.stopPropagation).toHaveBeenCalled();
+    });
+  });
+
+  describe('toolbar star button with badge', () => {
+    it('should render a star button in the toolbar', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+
+      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button[mat-icon-button]');
+      expect(toolbarStar).toBeTruthy();
+      const icon = toolbarStar?.querySelector('mat-icon');
+      expect(icon?.textContent).toContain('star');
+    });
+
+    it('should have a badge with the favorite count', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      const favoritenliste = TestBed.inject(FavoritenlisteService);
+
+      favoritenliste.add('101', sheetId);
+      favoritenliste.add('102', sheetId);
+      fixture.detectChanges();
+
+      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button[matBadge]');
+      expect(toolbarStar).toBeTruthy();
+    });
+
+    it('should hide badge when count is zero', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+
+      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button[matBadgeHidden]');
+      expect(toolbarStar).toBeTruthy();
+    });
+
+    it('navigateToFavorites should navigate to /favorites/:selectedEvent', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      const router = TestBed.inject(Router);
+      fixture.detectChanges();
+
+      fixture.componentInstance.selectedEvent = 0;
+      fixture.componentInstance.navigateToFavorites();
+
+      expect(router.navigate).toHaveBeenCalledWith(['/favorites', 0]);
+    });
+
+    it('favoriteCount$ should emit the current count of favorites', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      const favoritenliste = TestBed.inject(FavoritenlisteService);
+      fixture.detectChanges();
+
+      let count: number | undefined;
+      fixture.componentInstance.favoriteCount$.subscribe(c => count = c);
+
+      expect(count).toBe(0);
+
+      favoritenliste.add('101', sheetId);
+      expect(count).toBe(1);
+
+      favoritenliste.add('102', sheetId);
+      expect(count).toBe(2);
+
+      favoritenliste.remove('101', sheetId);
+      expect(count).toBe(1);
     });
   });
 });
