@@ -9,7 +9,7 @@ A conference or workshop edition with its own schedule, backed by a dedicated Go
 _Avoid_: Conference, schedule, programme
 
 **TrackEntry** (Track):
-A single session or talk within an Event, assigned to exactly one Room and one TimeSlot.
+A single session or talk within an Event, assigned to exactly one Room and one TimeSlot. Sourced entirely from the `Tracks` worksheet, which already joins schedule assignment (Slot, Raum) with session content (Titel, Vortragende, etc.) via spreadsheet formulas. Each TrackEntry has two distinct identifiers: `id` (the identity of the Tracks-sheet row itself, i.e. this TimeSlot+Room position) and `SessionID` (the identity of the session assigned to that position, stable across rescheduling — see Favoritenliste).
 _Avoid_: Session, talk, item, slot (ambiguous with TimeSlot)
 
 **Room** (Raum):
@@ -37,5 +37,5 @@ An Austrian digital competency framework. Each TrackEntry is tagged with one or 
 _Avoid_: Category, tag, competency level
 
 **Favoritenliste**:
-A user's personal collection of TrackEntries they plan to attend, stored locally in the browser (localStorage). Identified by stable TrackEntry UIDs so entries survive rescheduling.
+A user's personal collection of TrackEntries they plan to attend, stored locally in the browser (localStorage). Identified by each TrackEntry's `SessionID` (not `id`), so entries survive rescheduling — a TrackEntry's `id` changes if it moves to a different TimeSlot/Room row, but its `SessionID` does not.
 _Avoid_: Bookmarks, Merkliste, Watchlist, personal track list
