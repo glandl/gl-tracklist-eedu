@@ -6,7 +6,9 @@ import { of } from 'rxjs';
 
 import { TrackDetailComponent } from './track-detail.component';
 import { GoogleSheetsService, SHEETS_API_KEY } from '../shared/google-sheets.service';
+import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { TrackEntry } from '../shared/model/track-entry';
+import { environment } from 'src/environments/environment';
 
 const fixtureTrack: TrackEntry = {
   id: '1',
@@ -104,6 +106,97 @@ describe('TrackDetailComponent', () => {
       expect(fixture.componentInstance).toBeTruthy();
       expect(fixture.componentInstance.track).toBeNull();
       expect(fixture.nativeElement.textContent).toContain('Session nicht gefunden');
+    });
+  });
+
+  describe('favourite star toggle', () => {
+    const sheetId = environment.Events[0].Tracks.spreadsheetID;
+
+    async function setupWith(track: TrackEntry): Promise<void> {
+      const googleSheetsSpy = jasmine.createSpyObj('GoogleSheetsService', ['get']);
+      googleSheetsSpy.get.and.returnValue(of([track]));
+
+      await TestBed.configureTestingModule({
+        declarations: [TrackDetailComponent],
+        providers: [
+          { provide: GoogleSheetsService, useValue: googleSheetsSpy },
+          { provide: SHEETS_API_KEY, useValue: '' },
+          { provide: ActivatedRoute, useValue: mockRoute(track.Slot, track.Raum) },
+          { provide: Location, useValue: jasmine.createSpyObj('Location', ['back']) },
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+      }).compileComponents();
+    }
+
+    beforeEach(() => {
+      localStorage.clear();
+    });
+
+    afterEach(() => {
+      localStorage.clear();
+    });
+
+    it('renders an outlined star when the entry is not in the Favoritenliste', async () => {
+      await setupWith(fixtureTrack);
+
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+
+      const starButton: HTMLElement | null = fixture.nativeElement.querySelector('[data-test="favorite-toggle"]');
+      expect(starButton).toBeTruthy();
+      expect(starButton!.textContent).toContain('star_border');
+    });
+
+    it('renders a filled star when the entry is already in the Favoritenliste', async () => {
+      await setupWith(fixtureTrack);
+      const favoritenliste = TestBed.inject(FavoritenlisteService);
+      favoritenliste.add(fixtureTrack.SessionID, sheetId);
+
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+
+      const starButton: HTMLElement | null = fixture.nativeElement.querySelector('[data-test="favorite-toggle"]');
+      expect(starButton).toBeTruthy();
+      expect(starButton!.textContent).toContain('star');
+      expect(starButton!.textContent).not.toContain('star_border');
+    });
+
+    it('adds the SessionID to the Favoritenliste when toggled from outlined', async () => {
+      await setupWith(fixtureTrack);
+      const favoritenliste = TestBed.inject(FavoritenlisteService);
+
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+
+      fixture.componentInstance.toggleFavorite();
+      fixture.detectChanges();
+
+      expect(favoritenliste.contains(fixtureTrack.SessionID, sheetId)).toBe(true);
+    });
+
+    it('removes the SessionID from the Favoritenliste when toggled from filled', async () => {
+      await setupWith(fixtureTrack);
+      const favoritenliste = TestBed.inject(FavoritenlisteService);
+      favoritenliste.add(fixtureTrack.SessionID, sheetId);
+
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+
+      fixture.componentInstance.toggleFavorite();
+      fixture.detectChanges();
+
+      expect(favoritenliste.contains(fixtureTrack.SessionID, sheetId)).toBe(false);
+    });
+
+    it('does not render a star button when SessionID is empty', async () => {
+      const trackWithoutUid = { ...fixtureTrack, SessionID: '' };
+      await setupWith(trackWithoutUid);
+
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+
+      const starButton = fixture.nativeElement.querySelector('[data-test="favorite-toggle"]');
+      expect(starButton).toBeNull();
     });
   });
 });
