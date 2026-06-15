@@ -39,3 +39,7 @@ _Avoid_: Category, tag, competency level
 **Favoritenliste**:
 A user's personal collection of TrackEntries they plan to attend, stored locally in the browser (localStorage). Identified by each TrackEntry's `SessionID` (not `id`), so entries survive rescheduling — a TrackEntry's `id` changes if it moves to a different TimeSlot/Room row, but its `SessionID` does not.
 _Avoid_: Bookmarks, Merkliste, Watchlist, personal track list
+
+**Favorisierbar**:
+A per-TrackEntry flag (`"J"`/`"N"`, blank treated as `"N"`) sourced from the Tracks sheet, marking whether a TrackEntry may be added to the Favoritenliste at all — e.g. a Pause is not Favorisierbar. When a TrackEntry is not Favorisierbar, the Pivot Table cell shows no star toggle and is not a link to the detail view. Entries already in someone's Favoritenliste are unaffected even if later marked not Favorisierbar.
+_Avoid_: favoritable, favoritierbar, toggleable

@@ -5,7 +5,7 @@ import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
-import { TrackEntry, trackentryAttributesMapping, getDigiKompLabel } from '../shared/model/track-entry';
+import { TrackEntry, trackentryAttributesMapping, getDigiKompLabel, isFavoritable } from '../shared/model/track-entry';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -75,7 +75,7 @@ export class TrackDetailComponent implements OnInit {
   }
 
   get canFavorite(): boolean {
-    return !!this.track?.SessionID;
+    return !!this.track?.SessionID && isFavoritable(this.track);
   }
 
   toggleFavorite(): void {

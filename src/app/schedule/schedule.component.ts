@@ -8,7 +8,7 @@ import { last, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { Room, roomAttributesMapping } from '../shared/model/room';
 import { TimeSlot, timeslotAttributesMapping } from '../shared/model/time-slot';
-import { TrackEntry, trackentryAttributesMapping } from '../shared/model/track-entry';
+import { TrackEntry, trackentryAttributesMapping, isFavoritable as isTrackFavoritable } from '../shared/model/track-entry';
 
 @Component({
     selector: 'app-schedule',
@@ -130,6 +130,10 @@ export class ScheduleComponent implements OnInit {
 
   isFavorite(uid: string): boolean {
     return this.favoritenliste.contains(uid, this.spreadsheetId);
+  }
+
+  isFavoritable(track: TrackEntry | undefined): boolean {
+    return isTrackFavoritable(track);
   }
 
   toggleFavorite(uid: string, $event: MouseEvent): void {

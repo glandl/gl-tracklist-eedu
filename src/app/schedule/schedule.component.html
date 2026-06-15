@@ -107,7 +107,7 @@
         }
       </th>
       <td mat-cell *matCellDef="let element" [ngClass]="(element[disCol] ? element[disCol]['dkStyle'] : '')">
-        @if (element[disCol]?.SessionID) {
+        @if (element[disCol]?.SessionID && isFavoritable(element[disCol])) {
           <button
             mat-icon-button
             class="favorite-star"
@@ -118,8 +118,8 @@
         }
         <div
           [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')"
-          [routerLink]="element[disCol]?.Vortragende ? ['/detail', selectedEvent, element.Zeit, disCol] : null"
-          [class.cell-link]="element[disCol]?.Vortragende">
+          [routerLink]="(element[disCol]?.Vortragende && isFavoritable(element[disCol])) ? ['/detail', selectedEvent, element.Zeit, disCol] : null"
+          [class.cell-link]="element[disCol]?.Vortragende && isFavoritable(element[disCol])">
         </div>
       </td>
     </ng-container>

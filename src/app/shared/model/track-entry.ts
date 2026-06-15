@@ -17,6 +17,7 @@ export const trackentryAttributesMapping = {
   DetailLink: 'DetailLink',
   dkStyle: 'dkStyle',
   Beschreibungstext: 'Beschreibungstext',
+  Favorisierbar: 'Favorisierbar',
 };
 
 const digiKompLabels: Record<string, string> = {
@@ -29,6 +30,10 @@ const digiKompLabels: Record<string, string> = {
 
 export function getDigiKompLabel(dkStyle: string | undefined): string {
   return digiKompLabels[dkStyle ?? ''] ?? '';
+}
+
+export function isFavoritable(track: Pick<TrackEntry, 'Favorisierbar'> | undefined): boolean {
+  return track?.Favorisierbar === 'J';
 }
 
 export interface TrackEntry {
@@ -50,4 +55,5 @@ export interface TrackEntry {
   DetailLink: string;
   dkStyle: string;
   Beschreibungstext: string;
+  Favorisierbar: string;
 }
