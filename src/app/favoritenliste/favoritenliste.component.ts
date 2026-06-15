@@ -70,20 +70,25 @@ export class FavoritenlisteComponent implements OnInit {
     timeslots: TimeSlot[],
     favorites: string[]
   ): FavoritenlisteEntry[] {
-    const trackByUid = new Map<string, TrackEntry>();
+    const tracksByUid = new Map<string, TrackEntry[]>();
     for (const t of tracks) {
       if (t.SessionID) {
-        trackByUid.set(t.SessionID, t);
+        const list = tracksByUid.get(t.SessionID);
+        if (list) {
+          list.push(t);
+        } else {
+          tracksByUid.set(t.SessionID, [t]);
+        }
       }
     }
     const slotOrder = new Map<string, number>();
     timeslots.forEach((ts, i) => slotOrder.set(ts.Slot, i));
 
-    const entries: FavoritenlisteEntry[] = favorites.map(uid => {
-      const track = trackByUid.get(uid);
-      return track
-        ? { uid, isMissing: false, track }
-        : { uid, isMissing: true };
+    const entries: FavoritenlisteEntry[] = favorites.flatMap(uid => {
+      const matchingTracks = tracksByUid.get(uid);
+      return matchingTracks
+        ? matchingTracks.map((track): FavoritenlisteEntry => ({ uid, isMissing: false, track }))
+        : [{ uid, isMissing: true } as FavoritenlisteEntry];
     });
 
     const orderOf = (entry: FavoritenlisteEntry) =>

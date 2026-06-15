@@ -12,7 +12,7 @@
     </div>
   } @else {
     <ul class="favorites">
-      @for (entry of entries; track entry.uid) {
+      @for (entry of entries; track entry.uid + '_' + (entry.track?.id ?? '')) {
         @if (entry.isMissing) {
           <li class="favorite missing">
             <span class="missing-label">Session nicht mehr verfügbar (ID: {{ entry.uid }})</span>
