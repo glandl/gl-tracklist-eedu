@@ -98,6 +98,9 @@ export class ScheduleComponent implements OnInit {
       if (!this.tracksPivot[trElem.Slot] || !(trElem.Raum in this.tracksPivot[trElem.Slot])) {
         return;
       }
+      if (trElem.SessionID === '#N/A') {
+        return;
+      }
       this.tracksPivot[trElem.Slot][trElem.Raum] = trElem;
     });
     Object.keys(this.tracksPivot).forEach(k => {
