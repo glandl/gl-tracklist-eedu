@@ -13,7 +13,6 @@ export interface FavoritenlisteEntry {
   uid: string;
   isMissing: boolean;
   track?: TrackEntry;
-  timeSlot?: TimeSlot;
 }
 
 @Component({
@@ -77,28 +76,17 @@ export class FavoritenlisteComponent implements OnInit {
     }
     const slotOrder = new Map<string, number>();
     timeslots.forEach((ts, i) => slotOrder.set(ts.Slot, i));
-    const timeslotBySlot = new Map<string, TimeSlot>();
-    timeslots.forEach(ts => timeslotBySlot.set(ts.Slot, ts));
 
     const entries: FavoritenlisteEntry[] = favorites.map(uid => {
       const track = trackByUid.get(uid);
-      if (!track) {
-        return { uid, isMissing: true };
-      }
-      return {
-        uid,
-        isMissing: false,
-        track,
-        timeSlot: timeslotBySlot.get(track.Slot),
-      };
+      return track
+        ? { uid, isMissing: false, track }
+        : { uid, isMissing: true };
     });
 
-    const missingOrderIndex = Number.MAX_SAFE_INTEGER;
-    return entries.sort((a, b) => {
-      const ai = a.track ? slotOrder.get(a.track.Slot) ?? missingOrderIndex : missingOrderIndex;
-      const bi = b.track ? slotOrder.get(b.track.Slot) ?? missingOrderIndex : missingOrderIndex;
-      return ai - bi;
-    });
+    const orderOf = (entry: FavoritenlisteEntry) =>
+      entry.track ? slotOrder.get(entry.track.Slot) ?? Number.MAX_SAFE_INTEGER : Number.MAX_SAFE_INTEGER;
+    return entries.sort((a, b) => orderOf(a) - orderOf(b));
   }
 
   goBack(): void {

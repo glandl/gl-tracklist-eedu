@@ -1,5 +1,5 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { of } from 'rxjs';
@@ -88,7 +88,6 @@ function configure(favorites: string[]) {
       { provide: ActivatedRoute, useValue: route },
       { provide: Location, useValue: jasmine.createSpyObj('Location', ['back']) },
       { provide: FavoritenlisteService, useValue: favoritenliste },
-      { provide: Router, useValue: jasmine.createSpyObj('Router', ['navigate']) },
     ],
     schemas: [NO_ERRORS_SCHEMA],
   }).compileComponents();
