@@ -26,6 +26,7 @@
               @if (entry.track!.dkStyle) {
                 <span class="digikomp-badge" [ngClass]="entry.track!.dkStyle">{{ digiKompLabel(entry.track!) }}</span>
               }
+              <span class="room">{{ entry.track!.DigiKomp }}</span>
             </div>
             <div class="presenter">{{ entry.track!.Vorname }} {{ entry.track!.Nachname }}</div>
             <div class="title" [innerHTML]="entry.track!.Titel"></div>
