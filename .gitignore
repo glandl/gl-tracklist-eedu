@@ -507,3 +507,6 @@ MigrationBackup/
 
 # End of https://www.toptal.com/developers/gitignore/api/angular,node,visualstudio,visualstudiocode
 src/environments/secrets.ts
+.vscode/
+.claude/
+.sandcastle/
