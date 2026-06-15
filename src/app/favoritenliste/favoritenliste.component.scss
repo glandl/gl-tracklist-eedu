@@ -1,0 +1,53 @@
+.loading,
+.empty-state {
+  padding: 1.5rem;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.favorites {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.favorite {
+  display: block;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+
+  &.missing {
+    cursor: default;
+    color: rgba(0, 0, 0, 0.45);
+
+    .missing-label {
+      text-decoration: line-through;
+    }
+  }
+
+  .title {
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+
+    .digikomp-badge {
+      padding: 0 0.4rem;
+      border-radius: 3px;
+      color: #fff;
+    }
+  }
+
+  .presenter {
+    font-size: 0.85rem;
+  }
+}
