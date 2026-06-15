@@ -54,9 +54,10 @@ export class TrackDetailComponent implements OnInit {
       .subscribe({
         next: (tracks) => {
           this.track = tracks.find(t => t.Slot === this.slot && t.Raum === this.room) ?? null;
-          this.isFavorite$ = this.track && this.track.SessionID
+          const uid = this.track?.SessionID;
+          this.isFavorite$ = uid
             ? this.favoritenliste.list$(this.spreadsheetId).pipe(
-                map(list => list.includes(this.track!.SessionID))
+                map(list => list.includes(uid))
               )
             : of(false);
         },
@@ -81,12 +82,12 @@ export class TrackDetailComponent implements OnInit {
   }
 
   get canFavorite(): boolean {
-    return !!(this.track && this.track.SessionID);
+    return !!this.track?.SessionID;
   }
 
   toggleFavorite(): void {
-    if (!this.track || !this.track.SessionID) return;
-    const uid = this.track.SessionID;
+    const uid = this.track?.SessionID;
+    if (!uid) return;
     if (this.favoritenliste.contains(uid, this.spreadsheetId)) {
       this.favoritenliste.remove(uid, this.spreadsheetId);
     } else {
