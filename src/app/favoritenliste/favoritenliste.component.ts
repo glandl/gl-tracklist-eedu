@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
-import { combineLatest, Observable, of, Subject } from 'rxjs';
-import { map, switchMap, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
 import { TrackEntry, trackentryAttributesMapping } from '../shared/model/track-entry';
@@ -21,12 +21,11 @@ export interface FavoritenlisteEntry {
   styleUrls: ['./favoritenliste.component.scss'],
   standalone: false
 })
-export class FavoritenlisteComponent implements OnInit, OnDestroy {
+export class FavoritenlisteComponent implements OnInit {
   eventIndex = 0;
   eventName = '';
   loading = true;
   entries$: Observable<FavoritenlisteEntry[]> = of([]);
-  private destroy$ = new Subject<void>();
 
   constructor(
     private route: ActivatedRoute,
@@ -36,43 +35,40 @@ export class FavoritenlisteComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.entries$ = this.route.paramMap.pipe(
-      switchMap(paramMap => {
-        this.eventIndex = Number(paramMap.get('eventIndex') ?? '0');
-        this.loading = true;
-        const event = environment.Events[this.eventIndex];
-        if (!event) {
-          this.loading = false;
-          return of([]);
-        }
-        this.eventName = event.Name;
+    this.eventIndex = Number(this.route.snapshot.paramMap.get('eventIndex') ?? '0');
+    const event = environment.Events[this.eventIndex];
+    if (!event) {
+      this.loading = false;
+      return;
+    }
+    this.eventName = event.Name;
 
-        const tracks$ = this.googleSheetsService.get<TrackEntry>(
-          event.Tracks.spreadsheetID,
-          event.Tracks.worksheetName,
-          trackentryAttributesMapping
-        );
-        const timeslots$ = this.googleSheetsService.get<TimeSlot>(
-          event.Tracks.spreadsheetID,
-          event.TimeSlots.worksheetName,
-          timeslotAttributesMapping
-        );
-        const favorites$ = this.favoritenliste.list$(event.Tracks.spreadsheetID);
-
-        return combineLatest([tracks$, timeslots$, favorites$]).pipe(
-          map(([tracks, timeslots, favorites]) => {
-            this.loading = false;
-            return this.buildEntries(tracks, timeslots, favorites);
-          })
-        );
-      }),
-      takeUntil(this.destroy$)
+    const tracks$ = this.googleSheetsService.get<TrackEntry>(
+      event.Tracks.spreadsheetID,
+      event.Tracks.worksheetName,
+      trackentryAttributesMapping
+    ).pipe(
+      catchError(() => of([] as TrackEntry[]))
     );
-  }
+    const timeslots$ = this.googleSheetsService.get<TimeSlot>(
+      event.Tracks.spreadsheetID,
+      event.TimeSlots.worksheetName,
+      timeslotAttributesMapping
+    ).pipe(
+      catchError(() => of([] as TimeSlot[]))
+    );
+    const favorites$ = this.favoritenliste.list$(event.Tracks.spreadsheetID);
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    this.entries$ = combineLatest([tracks$, timeslots$, favorites$]).pipe(
+      map(([tracks, timeslots, favorites]) => {
+        this.loading = false;
+        return this.buildEntries(tracks, timeslots, favorites);
+      }),
+      catchError(() => {
+        this.loading = false;
+        return of([] as FavoritenlisteEntry[]);
+      })
+    );
   }
 
   private buildEntries(
