@@ -9,6 +9,7 @@ import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { TrackEntry } from '../shared/model/track-entry';
 import { Room } from '../shared/model/room';
 import { TimeSlot } from '../shared/model/time-slot';
+import { Schwerpunkt } from '../shared/model/schwerpunkt';
 import { environment } from 'src/environments/environment';
 
 const fixtureTrack1: TrackEntry = {
@@ -308,6 +309,60 @@ describe('ScheduleComponent', () => {
 
       favoritenliste.remove('101', sheetId);
       expect(count).toBe(1);
+    });
+  });
+
+  describe('getSchwerpunkte', () => {
+    const fixtureCatalogue: Schwerpunkt[] = [
+      { key: 'ki', label: 'Künstliche Intelligenz', color: '#E53935', textColor: '#FFFFFF' },
+      { key: 'datenschutz', label: 'Datenschutz', color: '#1E88E5', textColor: '#000000' },
+    ];
+
+    it('returns resolved Schwerpunkte for a TrackEntry with matching keys', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const track = { ...fixtureTrack1, Schwerpunkte: 'ki;datenschutz' };
+      const result = fixture.componentInstance.getSchwerpunkte(track);
+
+      expect(result.length).toBe(2);
+      expect(result[0].key).toBe('ki');
+      expect(result[1].key).toBe('datenschutz');
+    });
+
+    it('returns empty array for a TrackEntry with no Schwerpunkte', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const result = fixture.componentInstance.getSchwerpunkte(fixtureTrack1);
+      expect(result).toEqual([]);
+    });
+
+    it('returns empty array for undefined track', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const result = fixture.componentInstance.getSchwerpunkte(undefined);
+      expect(result).toEqual([]);
+    });
+
+    it('silently drops unknown keys', async () => {
+      await setup();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const track = { ...fixtureTrack1, Schwerpunkte: 'ki;unknown' };
+      const result = fixture.componentInstance.getSchwerpunkte(track);
+
+      expect(result.length).toBe(1);
+      expect(result[0].key).toBe('ki');
     });
   });
 });

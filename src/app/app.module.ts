@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { TrackDetailComponent } from './track-detail/track-detail.component';
 import { FavoritenlisteComponent } from './favoritenliste/favoritenliste.component';
+import { SchwerpunktBadgeComponent } from './shared/schwerpunkt-badge/schwerpunkt-badge.component';
 import { ScheduleReuseStrategy } from './schedule-reuse-strategy';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SHEETS_API_KEY } from './shared/google-sheets.service';
@@ -28,7 +29,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
         AppComponent,
         ScheduleComponent,
         TrackDetailComponent,
-        FavoritenlisteComponent
+        FavoritenlisteComponent,
+        SchwerpunktBadgeComponent
     ],
     bootstrap: [AppComponent], imports: [BrowserModule,
         AppRoutingModule,

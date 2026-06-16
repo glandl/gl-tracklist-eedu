@@ -121,6 +121,7 @@
           [routerLink]="(element[disCol]?.Vortragende && isFavoritable(element[disCol])) ? ['/detail', selectedEvent, element.Zeit, disCol] : null"
           [class.cell-link]="element[disCol]?.Vortragende && isFavoritable(element[disCol])">
         </div>
+        <app-schwerpunkt-badge [schwerpunkte]="getSchwerpunkte(element[disCol])"></app-schwerpunkt-badge>
       </td>
     </ng-container>
   }

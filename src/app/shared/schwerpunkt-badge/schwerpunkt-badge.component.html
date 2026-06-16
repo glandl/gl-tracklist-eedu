@@ -1,0 +1,12 @@
+@if (schwerpunkte.length > 0) {
+  <div class="schwerpunkt-badges">
+    @for (s of schwerpunkte; track s.key) {
+      <span
+        class="schwerpunkt-badge"
+        [style.background-color]="s.color"
+        [style.color]="s.textColor">
+        {{ s.label }}
+      </span>
+    }
+  </div>
+}

@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 import { Room, roomAttributesMapping } from '../shared/model/room';
 import { TimeSlot, timeslotAttributesMapping } from '../shared/model/time-slot';
 import { TrackEntry, trackentryAttributesMapping, isFavoritable as isTrackFavoritable } from '../shared/model/track-entry';
-import { Schwerpunkt, schwerpunktAttributesMapping } from '../shared/model/schwerpunkt';
+import { Schwerpunkt, schwerpunktAttributesMapping, resolveSchwerpunkte } from '../shared/model/schwerpunkt';
 
 @Component({
     selector: 'app-schedule',
@@ -164,5 +164,9 @@ export class ScheduleComponent implements OnInit {
 
   navigateToFavorites(): void {
     this.router.navigate(['/favorites', this.selectedEvent]);
+  }
+
+  getSchwerpunkte(track: TrackEntry | undefined): Schwerpunkt[] {
+    return resolveSchwerpunkte(track?.Schwerpunkte, this.schwerpunkte);
   }
 }
