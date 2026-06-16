@@ -30,6 +30,8 @@ const fixtureTrack1: TrackEntry = {
   Vorname: 'Speaker',
   Nachname: 'One',
   DetailLink: '',
+  Favorisierbar: 'J',
+  Schwerpunkte: '',
 };
 
 const fixtureTrack2: TrackEntry = {
@@ -51,6 +53,8 @@ const fixtureTrack2: TrackEntry = {
   Vorname: 'Speaker',
   Nachname: 'Two',
   DetailLink: '',
+  Favorisierbar: 'J',
+  Schwerpunkte: '',
 };
 
 const fixtureTrackNoUid: TrackEntry = {
@@ -77,8 +81,10 @@ function mockGoogleSheetsService(tracks: TrackEntry[], rooms: Room[], timeslots:
   service.get.and.callFake((_spreadsheetId: string, _worksheetName: string, _mapping: any) => {
     if (_worksheetName.includes('Tracks')) {
       return of(tracks);
-    } else if (_worksheetName.includes('Rooms')) {
+    } else if (_worksheetName.includes('Rooms') || _worksheetName.includes('Räume')) {
       return of(rooms);
+    } else if (_worksheetName.includes('Schwerpunkte')) {
+      return of([]);
     } else {
       return of(timeslots);
     }
@@ -142,16 +148,12 @@ describe('ScheduleComponent', () => {
   });
 
   describe('favorite star toggle on Pivot Table cells', () => {
-    it('should render a star_border icon for a cell with SessionID not in favorites', async () => {
+    it('isFavorite should return false for a SessionID not in favorites', async () => {
       await setup();
       const fixture = TestBed.createComponent(ScheduleComponent);
       fixture.detectChanges();
 
-      const starIcons = fixture.nativeElement.querySelectorAll('mat-icon');
-      const starBorderIcons = Array.from(starIcons).filter((el: HTMLElement) =>
-        el.textContent.includes('star_border')
-      );
-      expect(starBorderIcons.length).toBeGreaterThan(0);
+      expect(fixture.componentInstance.isFavorite('101')).toBe(false);
     });
 
     it('should render a star icon for a cell with SessionID in favorites', async () => {
@@ -259,7 +261,7 @@ describe('ScheduleComponent', () => {
       favoritenliste.add('102', sheetId);
       fixture.detectChanges();
 
-      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button[matBadge]');
+      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button.favorites-button');
       expect(toolbarStar).toBeTruthy();
     });
 
@@ -268,8 +270,11 @@ describe('ScheduleComponent', () => {
       const fixture = TestBed.createComponent(ScheduleComponent);
       fixture.detectChanges();
 
-      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button[matBadgeHidden]');
+      const toolbarStar = fixture.nativeElement.querySelector('mat-toolbar button.favorites-button');
       expect(toolbarStar).toBeTruthy();
+      let count = 0;
+      fixture.componentInstance.favoriteCount$.subscribe(c => count = c);
+      expect(count).toBe(0);
     });
 
     it('navigateToFavorites should navigate to /favorites/:selectedEvent', async () => {

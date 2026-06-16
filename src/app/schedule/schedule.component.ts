@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { Room, roomAttributesMapping } from '../shared/model/room';
 import { TimeSlot, timeslotAttributesMapping } from '../shared/model/time-slot';
 import { TrackEntry, trackentryAttributesMapping, isFavoritable as isTrackFavoritable } from '../shared/model/track-entry';
+import { Schwerpunkt, schwerpunktAttributesMapping } from '../shared/model/schwerpunkt';
 
 @Component({
     selector: 'app-schedule',
@@ -30,6 +31,7 @@ export class ScheduleComponent implements OnInit {
   public roomNames: string[] = [];
   public allColumns: string[] = ['Zeit'];
   public rooms: Record<string, Room> = {};
+  public schwerpunkte: Schwerpunkt[] = [];
 
   public arrPivot: any[] = [];
   public tableDS = new MatTableDataSource([]);
@@ -49,7 +51,20 @@ export class ScheduleComponent implements OnInit {
     this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
     this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
     this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
+    this.loadSchwerpunkte();
     this.getRooms();
+  }
+
+  loadSchwerpunkte(): void {
+    const event = environment.Events[this.selectedEvent];
+    if (!event.Schwerpunkte) return;
+    this.googleSheetsService.get<Schwerpunkt>(
+      event.Schwerpunkte.spreadsheetID,
+      event.Schwerpunkte.worksheetName,
+      schwerpunktAttributesMapping
+    ).subscribe(list => {
+      this.schwerpunkte = list.map(s => ({ ...s, textColor: s.textColor?.trim() || '#000000' }));
+    });
   }
 
   getRooms(): void {
@@ -89,7 +104,7 @@ export class ScheduleComponent implements OnInit {
     err => {},
     () => {
       this.tableDS = new MatTableDataSource(this.arrPivot);
-      this.table.renderRows();
+      this.table?.renderRows();
     });
   }
 
@@ -121,10 +136,12 @@ export class ScheduleComponent implements OnInit {
     this.arrTracks = [];
     this.roomNames = [];
     this.allColumns = ['Zeit'];
+    this.schwerpunkte = [];
     this.updateSpreadsheetId();
     this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
     this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
     this.timeslots$ = this.googleSheetsService.get<TimeSlot>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].TimeSlots.worksheetName, timeslotAttributesMapping);
+    this.loadSchwerpunkte();
     this.getRooms();
   }
 

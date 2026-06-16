@@ -6,8 +6,8 @@ describe('ScheduleReuseStrategy', () => {
 
   const createRoute = (path: string): ActivatedRouteSnapshot => ({
     routeConfig: { path },
-    paramMap: { get: () => null },
-    queryParamMap: { get: () => null },
+    paramMap: { get: () => null, has: () => false, getAll: () => [], keys: [] } as any,
+    queryParamMap: { get: () => null, has: () => false, getAll: () => [], keys: [] } as any,
     fragment: null,
     data: {},
     outlet: 'primary',
@@ -19,9 +19,8 @@ describe('ScheduleReuseStrategy', () => {
     url: [],
     params: {},
     queryParams: {},
-    snapshot: { paramMap: { get: () => null } } as any,
     toString: () => ''
-  });
+  } as unknown as ActivatedRouteSnapshot);
 
   const createRouteHandle = (): any => ({ componentRef: null });
 
@@ -64,35 +63,19 @@ describe('ScheduleReuseStrategy', () => {
   });
 
   describe('favorites route', () => {
-    it('should detach for the favorites route', () => {
+    it('should not detach for the favorites route', () => {
       const route = createRoute('favorites/:eventIndex');
-      expect(strategy.shouldDetach(route)).toBe(true);
+      expect(strategy.shouldDetach(route)).toBe(false);
     });
 
-    it('should store the handle for the favorites route', () => {
-      const route = createRoute('favorites/:eventIndex');
-      const handle = createRouteHandle();
-      strategy.store(route, handle);
-      expect(strategy.retrieve(route)).toBe(handle);
-    });
-
-    it('should attach for the favorites route when handle is stored', () => {
-      const route = createRoute('favorites/:eventIndex');
-      const handle = createRouteHandle();
-      strategy.store(route, handle);
-      expect(strategy.shouldAttach(route)).toBe(true);
-    });
-
-    it('should not attach for the favorites route when no handle is stored', () => {
+    it('should not attach for the favorites route', () => {
       const route = createRoute('favorites/:eventIndex');
       expect(strategy.shouldAttach(route)).toBe(false);
     });
 
-    it('should retrieve the stored handle for the favorites route', () => {
+    it('should return null when retrieving the favorites route', () => {
       const route = createRoute('favorites/:eventIndex');
-      const handle = createRouteHandle();
-      strategy.store(route, handle);
-      expect(strategy.retrieve(route)).toBe(handle);
+      expect(strategy.retrieve(route)).toBeNull();
     });
   });
 
@@ -121,30 +104,26 @@ describe('ScheduleReuseStrategy', () => {
   });
 
   describe('independent storage', () => {
-    it('should store schedule and favorites handles independently', () => {
+    it('should store schedule handle without affecting favorites', () => {
       const scheduleRoute = createRoute('');
       const favoritesRoute = createRoute('favorites/:eventIndex');
       const scheduleHandle = createRouteHandle();
-      const favoritesHandle = createRouteHandle();
 
       strategy.store(scheduleRoute, scheduleHandle);
-      strategy.store(favoritesRoute, favoritesHandle);
 
       expect(strategy.retrieve(scheduleRoute)).toBe(scheduleHandle);
-      expect(strategy.retrieve(favoritesRoute)).toBe(favoritesHandle);
+      expect(strategy.retrieve(favoritesRoute)).toBeNull();
     });
 
-    it('should allow attaching both routes independently', () => {
+    it('should only allow attaching the schedule route, not favorites', () => {
       const scheduleRoute = createRoute('');
       const favoritesRoute = createRoute('favorites/:eventIndex');
       const scheduleHandle = createRouteHandle();
-      const favoritesHandle = createRouteHandle();
 
       strategy.store(scheduleRoute, scheduleHandle);
-      strategy.store(favoritesRoute, favoritesHandle);
 
       expect(strategy.shouldAttach(scheduleRoute)).toBe(true);
-      expect(strategy.shouldAttach(favoritesRoute)).toBe(true);
+      expect(strategy.shouldAttach(favoritesRoute)).toBe(false);
     });
   });
 

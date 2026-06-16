@@ -29,6 +29,8 @@ const fixtureTrack: TrackEntry = {
   Vorname: 'Speaker',
   Nachname: 'Name',
   DetailLink: '',
+  Favorisierbar: 'J',
+  Schwerpunkte: '',
 };
 
 function mockRoute(slot: string, room: string) {

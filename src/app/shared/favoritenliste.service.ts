@@ -6,6 +6,7 @@ const KEY_PREFIX = 'favoritenliste_';
 @Injectable({ providedIn: 'root' })
 export class FavoritenlisteService {
   private subjects = new Map<string, BehaviorSubject<string[]>>();
+  private observables = new Map<string, Observable<string[]>>();
 
   add(uid: string, spreadsheetId: string): void {
     const current = this.read(spreadsheetId);
@@ -34,7 +35,12 @@ export class FavoritenlisteService {
   }
 
   list$(spreadsheetId: string): Observable<string[]> {
-    return this.subjectFor(spreadsheetId).asObservable();
+    let obs = this.observables.get(spreadsheetId);
+    if (!obs) {
+      obs = this.subjectFor(spreadsheetId).asObservable();
+      this.observables.set(spreadsheetId, obs);
+    }
+    return obs;
   }
 
   private subjectFor(spreadsheetId: string): BehaviorSubject<string[]> {

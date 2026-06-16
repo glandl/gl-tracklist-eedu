@@ -22,6 +22,10 @@ export const environment = {
         worksheetID: 4,
         worksheetName: 'Slots',
       },
+      Schwerpunkte: {
+        spreadsheetID: '1CKJLsUQWNGOluPEeTHZan5o2pbnRpFrinS1nfbYXgoI',
+        worksheetName: 'Schwerpunkte',
+      },
     },
   ]
 };

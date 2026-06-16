@@ -18,6 +18,7 @@ export const trackentryAttributesMapping = {
   dkStyle: 'dkStyle',
   Beschreibungstext: 'Beschreibungstext',
   Favorisierbar: 'Favorisierbar',
+  Schwerpunkte: 'Schwerpunkte',
 };
 
 const digiKompLabels: Record<string, string> = {
@@ -56,4 +57,5 @@ export interface TrackEntry {
   dkStyle: string;
   Beschreibungstext: string;
   Favorisierbar: string;
+  Schwerpunkte: string;
 }

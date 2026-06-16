@@ -31,6 +31,8 @@ function makeTrack(overrides: Partial<TrackEntry>): TrackEntry {
     DetailLink: '',
     dkStyle: '',
     Beschreibungstext: '',
+    Favorisierbar: 'J',
+    Schwerpunkte: '',
     ...overrides,
   };
 }
@@ -45,9 +47,9 @@ function makeTimeslot(slot: string): TimeSlot {
 }
 
 const tracks: TrackEntry[] = [
-  makeTrack({ id: '1', SessionID: 'uid-A', Titel: 'Track A', Vortragende: 'Speaker A', DigiKomp: '4', dkStyle: 'dk4', Slot: '10:00', Raum: 'Raum 1' }),
-  makeTrack({ id: '2', SessionID: 'uid-B', Titel: 'Track B', Vortragende: 'Speaker B', DigiKomp: '8', dkStyle: 'dk8', Slot: '09:00', Raum: 'Raum 2' }),
-  makeTrack({ id: '3', SessionID: 'uid-C', Titel: 'Track C', Vortragende: 'Speaker C', DigiKomp: '12', dkStyle: 'dk12', Slot: '11:00', Raum: 'Raum 3' }),
+  makeTrack({ id: '1', SessionID: 'uid-A', Titel: 'Track A', Vorname: 'Speaker', Nachname: 'A', Vortragende: 'Speaker A', DigiKomp: '4', dkStyle: 'dk4', Slot: '10:00', Raum: 'Raum 1' }),
+  makeTrack({ id: '2', SessionID: 'uid-B', Titel: 'Track B', Vorname: 'Speaker', Nachname: 'B', Vortragende: 'Speaker B', DigiKomp: '8', dkStyle: 'dk8', Slot: '09:00', Raum: 'Raum 2' }),
+  makeTrack({ id: '3', SessionID: 'uid-C', Titel: 'Track C', Vorname: 'Speaker', Nachname: 'C', Vortragende: 'Speaker C', DigiKomp: '12', dkStyle: 'dk12', Slot: '11:00', Raum: 'Raum 3' }),
 ];
 
 const timeslots: TimeSlot[] = [
@@ -152,7 +154,7 @@ describe('FavoritenlisteComponent', () => {
     expect(el.textContent).toContain('Speaker A');
     expect(el.textContent).toContain('10:00');
     expect(el.textContent).toContain('Raum 1');
-    expect(el.querySelector('.digikomp-badge')?.textContent?.trim()).toBe('4');
+    expect(el.querySelector('.digikomp-badge')?.textContent?.trim()).toBe('DigiKomp 4');
   });
 
   it('sets a routerLink on a non-missing entry pointing to the detail route', async () => {

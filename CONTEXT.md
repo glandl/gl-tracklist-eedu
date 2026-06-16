@@ -43,3 +43,15 @@ _Avoid_: Bookmarks, Merkliste, Watchlist, personal track list
 **Favorisierbar**:
 A per-TrackEntry flag (`"J"`/`"N"`, blank treated as `"N"`) sourced from the Tracks sheet, marking whether a TrackEntry may be added to the Favoritenliste at all — e.g. a Pause is not Favorisierbar. When a TrackEntry is not Favorisierbar, the Pivot Table cell shows no star toggle and is not a link to the detail view. Entries already in someone's Favoritenliste are unaffected even if later marked not Favorisierbar.
 _Avoid_: favoritable, favoritierbar, toggleable
+
+**Schwerpunkt** (pl. Schwerpunkte):
+A named topic tag that can be assigned to any TrackEntry, surfaced as a colored badge. Each Schwerpunkt has a `Schlüssel` (short key used for assignment), a `Bezeichnung` (display label), a `Farbe` (background hex color), and a `Textfarbe` (text hex color, defaults to `#000000` if blank). Schwerpunkte are defined per Event in a dedicated `Schwerpunkte` worksheet in the same Google Spreadsheet. Multiple Schwerpunkte may be assigned to one TrackEntry via a semicolon-separated list of Schlüssel values in the `Schwerpunkte` column of the Tracks sheet. Unknown Schlüssel values are silently ignored.
+_Avoid_: Topic, tag, category, label, theme
+
+**Schwerpunkt-Badge**:
+A colored chip rendered directly below the Titel of a TrackEntry, using the Schwerpunkt's `Farbe` as background and `Textfarbe` as text color, showing the `Bezeichnung`. Appears in the Pivot Table cell, the detail view, and the Favoritenliste. A TrackEntry with multiple Schwerpunkte shows multiple badges.
+_Avoid_: Tag chip, label, pill, marker
+
+**Schwerpunkt-Filter**:
+A row of Schwerpunkt-Badges shown in the header area of the Pivot Table. When no filter is active, all badges are visible. Clicking a badge activates it as the sole filter: only that badge remains visible in the header, and TimeSlot rows where no TrackEntry carries that Schwerpunkt are hidden. Clicking the active badge deactivates the filter and restores all badges. Only one Schwerpunkt can be active at a time. The filter applies to the Pivot Table only — the Favoritenliste and detail view are unaffected.
+_Avoid_: Tag filter, topic selector, filter bar
