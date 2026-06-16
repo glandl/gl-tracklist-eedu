@@ -9,6 +9,7 @@ import { GoogleSheetsService, SHEETS_API_KEY } from '../shared/google-sheets.ser
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { TrackEntry } from '../shared/model/track-entry';
 import { TimeSlot } from '../shared/model/time-slot';
+import { Schwerpunkt } from '../shared/model/schwerpunkt';
 import { environment } from 'src/environments/environment';
 
 function makeTrack(overrides: Partial<TrackEntry>): TrackEntry {
@@ -168,5 +169,45 @@ describe('FavoritenlisteComponent', () => {
     expect(entry).toBeTruthy();
     const componentInstance = fixture.componentInstance;
     expect(componentInstance.eventIndex).toBe(0);
+  });
+
+  describe('getSchwerpunkte', () => {
+    const fixtureCatalogue: Schwerpunkt[] = [
+      { key: 'ki', label: 'Künstliche Intelligenz', color: '#E53935', textColor: '#FFFFFF' },
+    ];
+
+    it('returns resolved Schwerpunkte for a track with matching keys', async () => {
+      await configure(['uid-A']);
+      const fixture = TestBed.createComponent(FavoritenlisteComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const track = makeTrack({ Schwerpunkte: 'ki' });
+      const result = fixture.componentInstance.getSchwerpunkte(track);
+
+      expect(result.length).toBe(1);
+      expect(result[0].key).toBe('ki');
+    });
+
+    it('returns empty array for a track with no Schwerpunkte', async () => {
+      await configure(['uid-A']);
+      const fixture = TestBed.createComponent(FavoritenlisteComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const track = makeTrack({ Schwerpunkte: '' });
+      expect(fixture.componentInstance.getSchwerpunkte(track)).toEqual([]);
+    });
+
+    it('renders app-schwerpunkt-badge elements for each entry', async () => {
+      await configure(['uid-A']);
+      const fixture = TestBed.createComponent(FavoritenlisteComponent);
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+
+      const badges = fixture.nativeElement.querySelectorAll('app-schwerpunkt-badge');
+      expect(badges.length).toBeGreaterThan(0);
+    });
   });
 });

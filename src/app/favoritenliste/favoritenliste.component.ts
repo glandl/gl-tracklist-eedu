@@ -6,6 +6,7 @@ import { catchError, map, timeout } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
 import { TrackEntry, trackentryAttributesMapping, getDigiKompLabel } from '../shared/model/track-entry';
+import { Schwerpunkt, schwerpunktAttributesMapping, resolveSchwerpunkte } from '../shared/model/schwerpunkt';
 import { TimeSlot, timeslotAttributesMapping } from '../shared/model/time-slot';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
 
@@ -25,6 +26,7 @@ export class FavoritenlisteComponent implements OnInit {
   eventIndex = 0;
   eventName = '';
   entries$: Observable<FavoritenlisteEntry[]> = of([]);
+  schwerpunkte: Schwerpunkt[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +42,15 @@ export class FavoritenlisteComponent implements OnInit {
       return;
     }
     this.eventName = event.Name;
+
+    if (event.Schwerpunkte) {
+      this.googleSheetsService
+        .get<Schwerpunkt>(event.Schwerpunkte.spreadsheetID, event.Schwerpunkte.worksheetName, schwerpunktAttributesMapping)
+        .pipe(catchError(() => of([] as Schwerpunkt[])))
+        .subscribe(list => {
+          this.schwerpunkte = list.map(s => ({ ...s, textColor: s.textColor?.trim() || '#000000' }));
+        });
+    }
 
     const tracks$ = this.googleSheetsService.get<TrackEntry>(
       event.Tracks.spreadsheetID,
@@ -98,6 +109,10 @@ export class FavoritenlisteComponent implements OnInit {
 
   digiKompLabel(track: TrackEntry): string {
     return getDigiKompLabel(track.dkStyle);
+  }
+
+  getSchwerpunkte(track: TrackEntry): Schwerpunkt[] {
+    return resolveSchwerpunkte(track.Schwerpunkte, this.schwerpunkte);
   }
 
   goBack(): void {

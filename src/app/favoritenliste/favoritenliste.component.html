@@ -30,6 +30,7 @@
             </div>
             <div class="presenter">{{ entry.track!.Vorname }} {{ entry.track!.Nachname }}</div>
             <div class="title" [innerHTML]="entry.track!.Titel"></div>
+            <app-schwerpunkt-badge [schwerpunkte]="getSchwerpunkte(entry.track!)"></app-schwerpunkt-badge>
           </li>
         }
       }

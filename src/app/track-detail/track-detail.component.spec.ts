@@ -8,6 +8,7 @@ import { TrackDetailComponent } from './track-detail.component';
 import { GoogleSheetsService, SHEETS_API_KEY } from '../shared/google-sheets.service';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { TrackEntry } from '../shared/model/track-entry';
+import { Schwerpunkt } from '../shared/model/schwerpunkt';
 import { environment } from 'src/environments/environment';
 
 const fixtureTrack: TrackEntry = {
@@ -199,6 +200,58 @@ describe('TrackDetailComponent', () => {
 
       const starButton = fixture.nativeElement.querySelector('[data-test="favorite-toggle"]');
       expect(starButton).toBeNull();
+    });
+  });
+
+  describe('trackSchwerpunkte getter', () => {
+    const fixtureCatalogue: Schwerpunkt[] = [
+      { key: 'ki', label: 'Künstliche Intelligenz', color: '#E53935', textColor: '#FFFFFF' },
+    ];
+
+    async function setupWithSchwerpunkte(schwerpunkteRaw: string): Promise<void> {
+      const track = { ...fixtureTrack, Schwerpunkte: schwerpunkteRaw };
+      const googleSheetsSpy = jasmine.createSpyObj('GoogleSheetsService', ['get']);
+      googleSheetsSpy.get.and.returnValue(of([track]));
+
+      await TestBed.configureTestingModule({
+        declarations: [TrackDetailComponent],
+        providers: [
+          { provide: GoogleSheetsService, useValue: googleSheetsSpy },
+          { provide: SHEETS_API_KEY, useValue: '' },
+          { provide: ActivatedRoute, useValue: mockRoute(track.Slot, track.Raum) },
+          { provide: Location, useValue: jasmine.createSpyObj('Location', ['back']) },
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+      }).compileComponents();
+    }
+
+    it('returns resolved Schwerpunkte when catalogue and keys are set', async () => {
+      await setupWithSchwerpunkte('ki');
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      expect(fixture.componentInstance.trackSchwerpunkte.length).toBe(1);
+      expect(fixture.componentInstance.trackSchwerpunkte[0].key).toBe('ki');
+    });
+
+    it('returns empty array when track has no Schwerpunkte field', async () => {
+      await setupWithSchwerpunkte('');
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      expect(fixture.componentInstance.trackSchwerpunkte).toEqual([]);
+    });
+
+    it('returns labels for all resolved Schwerpunkte', async () => {
+      await setupWithSchwerpunkte('ki');
+      const fixture = TestBed.createComponent(TrackDetailComponent);
+      fixture.detectChanges();
+      fixture.componentInstance.schwerpunkte = fixtureCatalogue;
+
+      const labels = fixture.componentInstance.trackSchwerpunkte.map(s => s.label);
+      expect(labels).toContain('Künstliche Intelligenz');
     });
   });
 });

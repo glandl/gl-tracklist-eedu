@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { GoogleSheetsService } from '../shared/google-sheets.service';
 import { FavoritenlisteService } from '../shared/favoritenliste.service';
 import { TrackEntry, trackentryAttributesMapping, getDigiKompLabel, isFavoritable } from '../shared/model/track-entry';
+import { Schwerpunkt, schwerpunktAttributesMapping, resolveSchwerpunkte } from '../shared/model/schwerpunkt';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -19,6 +20,7 @@ export class TrackDetailComponent implements OnInit {
   loading = true;
   eventName = '';
   isFavorite$: Observable<boolean> = of(false);
+  schwerpunkte: Schwerpunkt[] = [];
 
   private slot = '';
   private room = '';
@@ -44,6 +46,14 @@ export class TrackDetailComponent implements OnInit {
 
     this.eventName = event.Name;
     this.spreadsheetId = event.Tracks.spreadsheetID;
+
+    if (event.Schwerpunkte) {
+      this.googleSheetsService
+        .get<Schwerpunkt>(event.Schwerpunkte.spreadsheetID, event.Schwerpunkte.worksheetName, schwerpunktAttributesMapping)
+        .subscribe(list => {
+          this.schwerpunkte = list.map(s => ({ ...s, textColor: s.textColor?.trim() || '#000000' }));
+        });
+    }
 
     this.googleSheetsService
       .get<TrackEntry>(
@@ -72,6 +82,10 @@ export class TrackDetailComponent implements OnInit {
 
   get digiKompLabel(): string {
     return getDigiKompLabel(this.track?.dkStyle);
+  }
+
+  get trackSchwerpunkte(): Schwerpunkt[] {
+    return resolveSchwerpunkte(this.track?.Schwerpunkte, this.schwerpunkte);
   }
 
   get canFavorite(): boolean {

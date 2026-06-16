@@ -20,6 +20,7 @@
 } @else if (track) {
   <div class="detail">
     <h1 [innerHTML]="track.Titel"></h1>
+    <app-schwerpunkt-badge [schwerpunkte]="trackSchwerpunkte"></app-schwerpunkt-badge>
 
     <div class="meta">
       <span class="slot">{{ track.Slot }}</span>
