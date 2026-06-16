@@ -32,6 +32,7 @@ export class ScheduleComponent implements OnInit {
   public allColumns: string[] = ['Zeit'];
   public rooms: Record<string, Room> = {};
   public schwerpunkte: Schwerpunkt[] = [];
+  public activeSchwerpunkt: string | null = null;
 
   public arrPivot: any[] = [];
   public tableDS = new MatTableDataSource([]);
@@ -104,6 +105,7 @@ export class ScheduleComponent implements OnInit {
     err => {},
     () => {
       this.tableDS = new MatTableDataSource(this.arrPivot);
+      this.applyFilter();
       this.table?.renderRows();
     });
   }
@@ -137,6 +139,7 @@ export class ScheduleComponent implements OnInit {
     this.roomNames = [];
     this.allColumns = ['Zeit'];
     this.schwerpunkte = [];
+    this.activeSchwerpunkt = null;
     this.updateSpreadsheetId();
     this.rooms$ = this.googleSheetsService.get<Room>(environment.Events[this.selectedEvent].Rooms.spreadsheetID, environment.Events[this.selectedEvent].Rooms.worksheetName, roomAttributesMapping);
     this.tracks$ = this.googleSheetsService.get<TrackEntry>(environment.Events[this.selectedEvent].Tracks.spreadsheetID, environment.Events[this.selectedEvent].Tracks.worksheetName, trackentryAttributesMapping);
@@ -168,5 +171,30 @@ export class ScheduleComponent implements OnInit {
 
   getSchwerpunkte(track: TrackEntry | undefined): Schwerpunkt[] {
     return resolveSchwerpunkte(track?.Schwerpunkte, this.schwerpunkte);
+  }
+
+  matchesFilter(track: TrackEntry | undefined): boolean {
+    if (!this.activeSchwerpunkt) return true;
+    const raw: string = track?.Schwerpunkte ?? '';
+    return raw.split(';').map(k => k.trim()).includes(this.activeSchwerpunkt);
+  }
+
+  toggleSchwerpunktFilter(key: string): void {
+    this.activeSchwerpunkt = this.activeSchwerpunkt === key ? null : key;
+    this.applyFilter();
+  }
+
+  applyFilter(): void {
+    if (!this.activeSchwerpunkt) {
+      this.tableDS.data = this.arrPivot;
+      return;
+    }
+    const key = this.activeSchwerpunkt;
+    this.tableDS.data = this.arrPivot.filter(row =>
+      this.roomNames.some(room => {
+        const raw: string = row[room]?.Schwerpunkte ?? '';
+        return raw.split(';').map((k: string) => k.trim()).includes(key);
+      })
+    );
   }
 }

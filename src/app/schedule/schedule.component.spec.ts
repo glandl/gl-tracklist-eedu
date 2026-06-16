@@ -312,6 +312,116 @@ describe('ScheduleComponent', () => {
     });
   });
 
+  describe('toggleSchwerpunktFilter and applyFilter', () => {
+    const fixtureCatalogue: Schwerpunkt[] = [
+      { key: 'ki', label: 'Künstliche Intelligenz', color: '#E53935', textColor: '#FFFFFF' },
+    ];
+
+    const fixtureTimeSlot2: TimeSlot = {
+      Datum: new Date(),
+      von: { hours: 10, minutes: 0 },
+      bis: { hours: 11, minutes: 0 },
+      Slot: '10:00',
+    };
+
+    async function setupForFilter(): Promise<void> {
+      const trackWithTag: TrackEntry = { ...fixtureTrack1, Schwerpunkte: 'ki' };
+      const trackWithoutTag: TrackEntry = { ...fixtureTrack1, id: '2', SessionID: '102', Slot: '10:00', Schwerpunkte: '' };
+      const rooms = [fixtureRoom];
+      const timeslots = [fixtureTimeSlot, fixtureTimeSlot2];
+      const googleSheetsSpy = jasmine.createSpyObj('GoogleSheetsService', ['get']);
+      googleSheetsSpy.get.and.callFake((_spreadsheetId: string, _worksheetName: string) => {
+        if (_worksheetName.includes('Tracks')) return of([trackWithTag, trackWithoutTag]);
+        if (_worksheetName.includes('Rooms') || _worksheetName.includes('Räume')) return of(rooms);
+        if (_worksheetName.includes('Schwerpunkte')) return of(fixtureCatalogue);
+        return of(timeslots);
+      });
+      const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
+      await TestBed.configureTestingModule({
+        declarations: [ScheduleComponent],
+        providers: [
+          { provide: GoogleSheetsService, useValue: googleSheetsSpy },
+          { provide: SHEETS_API_KEY, useValue: '' },
+          { provide: Router, useValue: routerSpy },
+        ],
+        schemas: [NO_ERRORS_SCHEMA],
+      }).compileComponents();
+    }
+
+    it('activates filter and reduces tableDS.data to matching rows only', async () => {
+      await setupForFilter();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      const comp = fixture.componentInstance;
+
+      expect(comp.tableDS.data.length).toBe(2);
+
+      comp.toggleSchwerpunktFilter('ki');
+
+      expect(comp.activeSchwerpunkt).toBe('ki');
+      expect(comp.tableDS.data.length).toBe(1);
+      expect((comp.tableDS.data[0] as any).Zeit).toBe('09:00');
+    });
+
+    it('deactivates filter and restores all rows when toggling active key again', async () => {
+      await setupForFilter();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      const comp = fixture.componentInstance;
+
+      comp.toggleSchwerpunktFilter('ki');
+      expect(comp.activeSchwerpunkt).toBe('ki');
+
+      comp.toggleSchwerpunktFilter('ki');
+      expect(comp.activeSchwerpunkt).toBeNull();
+      expect(comp.tableDS.data.length).toBe(2);
+    });
+
+    it('matchesFilter returns false for a cell that does not carry the active key', async () => {
+      await setupForFilter();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      const comp = fixture.componentInstance;
+
+      comp.activeSchwerpunkt = 'ki';
+      const nonMatchingTrack = { ...fixtureTrack1, Schwerpunkte: '' };
+      expect(comp.matchesFilter(nonMatchingTrack)).toBe(false);
+    });
+
+    it('matchesFilter returns true for a cell that carries the active key', async () => {
+      await setupForFilter();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      const comp = fixture.componentInstance;
+
+      comp.activeSchwerpunkt = 'ki';
+      const matchingTrack = { ...fixtureTrack1, Schwerpunkte: 'ki' };
+      expect(comp.matchesFilter(matchingTrack)).toBe(true);
+    });
+
+    it('matchesFilter returns true for any cell when no filter is active', async () => {
+      await setupForFilter();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      const comp = fixture.componentInstance;
+
+      expect(comp.matchesFilter({ ...fixtureTrack1, Schwerpunkte: '' })).toBe(true);
+    });
+
+    it('resets activeSchwerpunkt to null when event changes', async () => {
+      await setupForFilter();
+      const fixture = TestBed.createComponent(ScheduleComponent);
+      fixture.detectChanges();
+      const comp = fixture.componentInstance;
+
+      comp.toggleSchwerpunktFilter('ki');
+      expect(comp.activeSchwerpunkt).toBe('ki');
+
+      comp.OnEventChanged();
+      expect(comp.activeSchwerpunkt).toBeNull();
+    });
+  });
+
   describe('getSchwerpunkte', () => {
     const fixtureCatalogue: Schwerpunkt[] = [
       { key: 'ki', label: 'Künstliche Intelligenz', color: '#E53935', textColor: '#FFFFFF' },

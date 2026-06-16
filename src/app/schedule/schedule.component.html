@@ -90,6 +90,22 @@
 
   </mat-grid-list>
 </section>
+@if (schwerpunkte.length > 0) {
+  <section class="schwerpunkt-filter">
+    @for (s of schwerpunkte; track s.key) {
+      @if (!activeSchwerpunkt || activeSchwerpunkt === s.key) {
+        <span
+          class="schwerpunkt-badge schwerpunkt-filter-badge"
+          [class.active]="activeSchwerpunkt === s.key"
+          [style.background-color]="s.color"
+          [style.color]="s.textColor"
+          (click)="toggleSchwerpunktFilter(s.key)">
+          {{ s.label }}
+        </span>
+      }
+    }
+  </section>
+}
 <section class="trackgrid">
   <table mat-table [dataSource]="tableDS">
     <!-- Zeit Column -->
@@ -106,22 +122,24 @@
           <a [href]="rooms[disCol].RaumLink" target="_blank"><div>{{disCol}}</div></a>
         }
       </th>
-      <td mat-cell *matCellDef="let element" [ngClass]="(element[disCol] ? element[disCol]['dkStyle'] : '')">
-        @if (element[disCol]?.SessionID && isFavoritable(element[disCol])) {
-          <button
-            mat-icon-button
-            class="favorite-star"
-            [attr.aria-label]="(isFavorite(element[disCol].SessionID) ? 'Aus Favoritenliste entfernen' : 'Zur Favoritenliste hinzufuegen')"
-            (click)="toggleFavorite(element[disCol].SessionID, $event)">
-            <mat-icon>{{ isFavorite(element[disCol].SessionID) ? 'star' : 'star_border' }}</mat-icon>
-          </button>
+      <td mat-cell *matCellDef="let element" [ngClass]="(element[disCol] && matchesFilter(element[disCol])) ? element[disCol]['dkStyle'] : ''">
+        @if (matchesFilter(element[disCol])) {
+          @if (element[disCol]?.SessionID && isFavoritable(element[disCol])) {
+            <button
+              mat-icon-button
+              class="favorite-star"
+              [attr.aria-label]="(isFavorite(element[disCol].SessionID) ? 'Aus Favoritenliste entfernen' : 'Zur Favoritenliste hinzufuegen')"
+              (click)="toggleFavorite(element[disCol].SessionID, $event)">
+              <mat-icon>{{ isFavorite(element[disCol].SessionID) ? 'star' : 'star_border' }}</mat-icon>
+            </button>
+          }
+          <div
+            [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')"
+            [routerLink]="(element[disCol]?.Vortragende && isFavoritable(element[disCol])) ? ['/detail', selectedEvent, element.Zeit, disCol] : null"
+            [class.cell-link]="element[disCol]?.Vortragende && isFavoritable(element[disCol])">
+          </div>
+          <app-schwerpunkt-badge [schwerpunkte]="getSchwerpunkte(element[disCol])"></app-schwerpunkt-badge>
         }
-        <div
-          [innerHTML]="(element[disCol] ? element[disCol]['Vortragende'] : '')"
-          [routerLink]="(element[disCol]?.Vortragende && isFavoritable(element[disCol])) ? ['/detail', selectedEvent, element.Zeit, disCol] : null"
-          [class.cell-link]="element[disCol]?.Vortragende && isFavoritable(element[disCol])">
-        </div>
-        <app-schwerpunkt-badge [schwerpunkte]="getSchwerpunkte(element[disCol])"></app-schwerpunkt-badge>
       </td>
     </ng-container>
   }

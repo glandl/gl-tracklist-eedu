@@ -86,3 +86,24 @@ td {
   z-index: 1000;
   background-color: rgba(200 , 200, 200, 0.7);
 }
+
+.schwerpunkt-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.schwerpunkt-filter-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &.active {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+}
