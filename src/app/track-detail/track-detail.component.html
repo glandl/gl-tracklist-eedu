@@ -20,7 +20,6 @@
 } @else if (track) {
   <div class="detail">
     <h1 [innerHTML]="track.Titel"></h1>
-    <app-schwerpunkt-badge [schwerpunkte]="trackSchwerpunkte"></app-schwerpunkt-badge>
 
     <div class="meta">
       <span class="slot">{{ track.Slot }}</span>
@@ -28,6 +27,7 @@
       @if (track.dkStyle) {
         <span class="digikomp-badge" [ngClass]="track.dkStyle">{{ digiKompLabel }}</span>
       }
+      <app-schwerpunkt-badge [schwerpunkte]="trackSchwerpunkte"></app-schwerpunkt-badge>
       <span class="room">{{ track.DigiKomp }}</span>
 
 
