@@ -145,7 +145,8 @@
   }
 
 
-  <tr mat-header-row *matHeaderRowDef="allColumns"></tr>
+  <!-- matHeaderRowDefSticky: keeps the header row pinned while scrolling (issue #23) -->
+  <tr mat-header-row *matHeaderRowDef="allColumns" matHeaderRowDefSticky></tr>
   <tr mat-row *matRowDef="let row; columns: allColumns;"></tr>
 </table>
 </section>

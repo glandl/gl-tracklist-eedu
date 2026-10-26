@@ -43,6 +43,16 @@ a{
   padding: 8px 8px 8px 8px;
 }
 
+// #23: sticky timetable header. Primary mechanism is the Material 21
+// matHeaderRowDefSticky input on the header row (see schedule.component.html);
+// these styles also act as a fallback for the sticky positioning itself.
+.mat-mdc-header-cell {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+}
+
 .mat-grid-tile {
   overflow: hidden;
 }
